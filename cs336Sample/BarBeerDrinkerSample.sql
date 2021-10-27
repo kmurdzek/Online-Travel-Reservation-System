@@ -36,7 +36,7 @@ CREATE TABLE `bars` (
 
 --
 -- Dumping data for table `bars`
---
+---
 
 LOCK TABLES `bars` WRITE;
 /*!40000 ALTER TABLE `bars` DISABLE KEYS */;
