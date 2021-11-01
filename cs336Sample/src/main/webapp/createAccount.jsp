@@ -38,11 +38,37 @@
 		</form>
 
 		<%
+
 		String fname = request.getParameter("f_name");
 		String lname = request.getParameter("l_name");
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		System.out.println(fname + " " + lname);
+		if(fname == null ||fname == "" || lname == "" || username == "" || password == ""){
+			System.out.println("Invalid");
+		}else{
+			System.out.println(fname + " " + lname + " " + username + " " + password);
+			//if none are null we can add it into the database
+			//Create a SQL statement
+			Statement stmt = con.createStatement();
+
+			//Make an insert statement for the Sells table:
+			String insert = "INSERT INTO users(username, password, fname, lname)"
+					+ "VALUES (?, ?, ?, ?)";
+			//Create a Prepared SQL statement allowing you to introduce the parameters of the query
+			PreparedStatement ps = con.prepareStatement(insert);
+
+			//Add parameters of the query. 
+			ps.setString(1, username);
+			ps.setString(2, password);
+			ps.setString(3, fname);
+			ps.setString(4, lname);
+			//Run the query against the DB
+			ps.executeUpdate();
+			con.close();
+			out.print("Insert succeeded!");
+			
+		}
+		
 		%>
 			<%
 			//close the connection.
