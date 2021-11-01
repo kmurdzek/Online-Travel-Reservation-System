@@ -8,7 +8,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-		<title>Hi Beer World</title>
+		<title>Plane Ticketing</title>
 	</head>
 	
 	<body>
@@ -24,16 +24,26 @@
 		<!-- forms are used to collect user input 
 			The default method when submitting form data is GET.
 			However, when GET is used, the submitted form data will be visible in the page address field-->
-		<form method="post" action="show.jsp">
+		<form method="post" action="mainInterface.jsp">
 		    <!-- note the show.jsp will be invoked when the choice is made -->
 			<!-- The next lines give HTML for radio buttons being displayed -->
-		  <input type="radio" name="command" value="beers"/>Let's have a beer! Click here to see the beers.
+
+		  <table>
+				<tr>    
+					<td>Username</td><td><input type="text" name="username"></td>
+				</tr>
+				<tr>
+					<td>Password</td><td><input type="text" name="password"></td>
+				</tr>		  
+			</table>
+			<input type="submit" name="command" value="Sign in"/>
 		  <br>
-		  <input type="radio" name="command" value="bars"/>Let's go to a bar! Click here to see the bars.
+		</form>
+		<form method="post" action="createAccount.jsp">
+		  <input type="submit" name="command" value="Create New Account"/>
 		    <!-- when the radio for bars is chosen, then 'command' will have value 
 		     | 'bars', in the show.jsp file, when you access request.parameters -->
 		  <br>
-		  <input type="submit" value="submit" />
 		</form>
 		<br>
 	
