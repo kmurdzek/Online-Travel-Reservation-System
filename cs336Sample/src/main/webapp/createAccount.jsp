@@ -46,14 +46,25 @@
 		if(fname == null ||fname == "" || lname == "" || username == "" || password == ""){
 			System.out.println("Invalid");
 		}else{
+			
+			//before inserting want to check that the username does not already exist
+			Statement check = con.createStatement();
+			String check_table = "SELECT count(*) from users where username = '" + username +"'"; //query to check
+			ResultSet result = check.executeQuery(check_table); // executes query
+			result.next(); //moves the cursor of what column its looking at
+			if(result.getInt(1) == 1){
+				//user exists cannot insert
+				out.print("This username is already taken, try a new username");
+				con.close();
+			}else{
 			System.out.println(fname + " " + lname + " " + username + " " + password);
 			//if none are null we can add it into the database
 			//Create a SQL statement
 			Statement stmt = con.createStatement();
 
 			//Make an insert statement for the Sells table:
-			String insert = "INSERT INTO users(username, password, fname, lname)"
-					+ "VALUES (?, ?, ?, ?)";
+			String insert = "INSERT INTO users(username, password, fname, lname, is_admin, is_customer, is_customer_rep)"
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
 			//Create a Prepared SQL statement allowing you to introduce the parameters of the query
 			PreparedStatement ps = con.prepareStatement(insert);
 
@@ -62,11 +73,14 @@
 			ps.setString(2, password);
 			ps.setString(3, fname);
 			ps.setString(4, lname);
+			ps.setBoolean(5, false);
+			ps.setBoolean(6, false);
+			ps.setBoolean(7, true);
 			//Run the query against the DB
 			ps.executeUpdate();
 			con.close();
 			out.print("Insert succeeded!");
-			
+			}
 		}
 		
 		%>
