@@ -12,9 +12,12 @@
 	</head>
 	
 	<body>
-
-		Hello World1 <!-- the usual HTML way -->
-		<% out.println("Hello World2"); %> <!-- output the same thing, but using 
+		<%
+		String message = request.getParameter("user_message");
+		if(message == null){
+			message = "Welcome please log in or create an account";
+		}
+		out.print(message); %> <!-- output the same thing, but using 
 	                                      jsp programming -->
 							  
 		<br>
@@ -39,8 +42,8 @@
 			<input type="submit" name="command" value="Sign in"/>
 		  <br>
 		</form>
-		<form method="post" action="createAccount.jsp">
-		  <input type="submit" name="command" value="Create New Account"/>
+		<form method="post" action="login.jsp">
+		  <input type="submit" name="user_message" value="Create New Account"/>
 		    <!-- when the radio for bars is chosen, then 'command' will have value 
 		     | 'bars', in the show.jsp file, when you access request.parameters -->
 		  <br>

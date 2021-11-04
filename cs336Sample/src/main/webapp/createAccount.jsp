@@ -13,31 +13,6 @@
 			//Get the database connection
 			ApplicationDB db = new ApplicationDB();	
 			Connection con = db.getConnection();		
-		%>
-				<!--  Make an HTML table to show the results in: -->
-		<form method="post" action="#">
-		    <!-- note the show.jsp will be invoked when the choice is made -->
-			<!-- The next lines give HTML for radio buttons being displayed -->
-
-		  <table>
-		  <tr>    
-				<td>First Name</td><td><input type="text" name="f_name"></td>
-				</tr>
-				<tr>    
-					<td>Last name</td><td><input type="text" name="l_name"></td>
-				</tr>
-				<tr>    
-					<td>Username</td><td><input type="text" name="username"></td>
-				</tr>
-				<tr>
-					<td>Password</td><td><input type="text" name="password"></td>
-				</tr>		  
-			</table>
-			<input type="submit" name="command" value="Create Account"/>
-		  <br>
-		</form>
-
-		<%
 
 		String fname = request.getParameter("f_name");
 		String lname = request.getParameter("l_name");
@@ -45,6 +20,11 @@
 		String password = request.getParameter("password");
 		if(fname == null ||fname == "" || lname == "" || username == "" || password == ""){
 			System.out.println("Invalid");
+			%>
+			<jsp:forward page = "login.jsp">
+			<jsp:param value="Invalid create user attempt" name="user_message"/>
+			</jsp:forward>
+			<% 
 		}else{
 			
 			//before inserting want to check that the username does not already exist
@@ -54,8 +34,12 @@
 			result.next(); //moves the cursor of what column its looking at
 			if(result.getInt(1) == 1){
 				//user exists cannot insert
-				out.print("This username is already taken, try a new username");
 				con.close();
+				%>
+			<jsp:forward page = "login.jsp">
+			<jsp:param value="This username is already taken, try a new username" name="user_message"/>
+			</jsp:forward>
+				<% 
 			}else{
 			System.out.println(fname + " " + lname + " " + username + " " + password);
 			//if none are null we can add it into the database
@@ -80,15 +64,22 @@
 			ps.executeUpdate();
 			con.close();
 			out.print("Insert succeeded!");
+			%>
+			<jsp:forward page = "HelloWorld.jsp">
+			<jsp:param value="Please log in to your newly created user" name="user_message"/>
+			</jsp:forward>
+			
+			<% 
+			//on success redirect to login
+			//if the insert succeeded load up the login page
+			//otherwise go back to the html page to create account
 			}
 		}
 		
-		%>
-			<%
+
 			//close the connection.
-			db.closeConnection(con);
-			%>			
-		<%} catch (Exception e) {
+			db.closeConnection(con);		
+	} catch (Exception e) {
 			out.print(e);
 		}%>
 	
