@@ -15,6 +15,12 @@
 
 	<h1>Welcome <% out.print(fullName); %></h1>
 	
+	<form method="post" action="landingPage.jsp">
+	<input type="submit" name="user_message" value="Log out"/>
+	<br>
+	
+	</form>
+	
 
 </body>
 </html>
