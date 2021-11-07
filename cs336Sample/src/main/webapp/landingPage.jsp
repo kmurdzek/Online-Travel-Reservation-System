@@ -13,12 +13,9 @@
 	
 	<body>
 		<%
-		String message = request.getParameter("user_message");
+		String message = (String)session.getAttribute("user_message");
 		if(message == null){
 			message = "Welcome please log in or create an account";
-		}
-		else if(message.equals("Log out")){
-			message = "Sucessfully logged out";
 		}
 		out.print(message); %> <!-- output the same thing, but using 
 	                                      jsp programming -->

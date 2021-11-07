@@ -9,7 +9,7 @@
 <body>
 <%
 //	String message = request.getParameter("user_message");
-	String fullName = request.getParameter("user_full_name");
+	String fullName = (String)session.getAttribute("name");
 //	out.print(message);
 %>
 
@@ -17,6 +17,7 @@
 	
 	<form method="post" action="landingPage.jsp">
 	<input type="submit" name="user_message" value="Log out"/>
+		<%session.invalidate(); %>
 	<br>
 	
 	</form>

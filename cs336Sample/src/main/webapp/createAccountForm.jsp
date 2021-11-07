@@ -8,7 +8,7 @@
 </head>
 <body>
 <%
-	String message = request.getParameter("user_message");
+	String message = (String)session.getAttribute("user_message");
 	out.print(message);
 %>
 		<form method="post" action="createAccountLogic.jsp">
