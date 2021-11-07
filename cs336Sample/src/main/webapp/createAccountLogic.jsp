@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Create Account</title>
 </head>
 <body>
 <% try {
@@ -19,8 +19,11 @@
 		String password = request.getParameter("password");
 		if(fname == "" || lname == "" || username == "" || password == ""){
 			System.out.println("Invalid");
-			session.setAttribute("user_message", "Invalid create user attempt");
-			response.sendRedirect("createAccountForm.jsp");
+			%>
+			<jsp:forward page = "createAccountForm.jsp">
+			<jsp:param value="Invalid create user attempt" name="user_message"/>
+			</jsp:forward>
+			<% 
 		}else{
 			
 			//before inserting want to check that the username does not already exist
@@ -31,8 +34,11 @@
 			if(result.getInt(1) == 1){
 				//user exists cannot insert
 				con.close();
-				session.setAttribute("user_message", "This username is already taken, try a new username");
-				response.sendRedirect("createAccountForm.jsp");
+				%>
+			<jsp:forward page = "createAccountForm.jsp">
+			<jsp:param value="This username is already taken, try a new username" name="user_message"/>
+			</jsp:forward>
+				<% 
 			}else{
 			System.out.println(fname + " " + lname + " " + username + " " + password);
 			//if none are null we can add it into the database
@@ -54,8 +60,13 @@
 			//Run the query against the DB
 			ps.executeUpdate();
 			con.close();
-			session.setAttribute("user_message", "Please log in to your newly created user");
-			response.sendRedirect("landingPage.jsp");
+
+			%>
+			<jsp:forward page = "landingPage.jsp">
+			<jsp:param value="Please log in to your newly created user" name="user_message"/>
+			</jsp:forward>
+			
+			<% 
 			//on success redirect to login
 			//if the insert succeeded load up the login page
 			//otherwise go back to the html page to create account

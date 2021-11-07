@@ -18,10 +18,13 @@
 		String password = request.getParameter("password");
 		
 		if(username == "" || password == ""){
-			System.out.println("Missing username, or password");
-			session.setAttribute("user_message", "Invalid login attempt");
-			response.sendRedirect("landingPage.jsp");
-			}
+			System.out.println("Missing username, or password");%>
+
+			<jsp:forward page = "landingPage.jsp">
+			<jsp:param value="Invalid login attempt" name="user_message"/>
+			</jsp:forward>
+
+		<%}
 		else{
 			// to successfully login, we need to verify that the username exists, and the corresponding password is correct
 			Statement check = con.createStatement();
@@ -51,16 +54,22 @@
 					}
 				else{
 					System.out.println("Invalid username, password combination");
-					con.close();
-					session.setAttribute("user_message", "Invalid username/password combination");
-					response.sendRedirect("landingPage.jsp");
-}
+					con.close();%>
+					
+					<jsp:forward page = "landingPage.jsp">
+					<jsp:param value="Invalid username/password combination" name="user_message"/>
+					</jsp:forward>
+					 
+				<%}
 			} 
 			else {
 				//the username DNE in the database
-				con.close(); 
-				session.setAttribute("user_message", "Invalid username");
-				response.sendRedirect("landingPage.jsp");}
+				con.close(); %>
+
+				<jsp:forward page = "landingPage.jsp">
+				<jsp:param value="Invalid Username" name="user_message"/>
+				</jsp:forward>
+			<%}
 		}
 		 //close the connection.
 		db.closeConnection(con);

@@ -13,8 +13,9 @@
 	
 	<body>
 		<%
-		String message = (String)session.getAttribute("user_message");
-		if(message == null){
+
+		String message = request.getParameter("user_message");
+		if(message == null||message.equals("Log out")){
 			message = "Welcome please log in or create an account";
 		}
 		out.print(message); %> <!-- output the same thing, but using 
@@ -40,7 +41,6 @@
 		
 		<form method="post" action="createAccountForm.jsp">
 		  <input type="submit" name="user_message" value="Create New Account"/>
-
 		  <br>
 		</form>
 		<br>
