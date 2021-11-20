@@ -45,7 +45,7 @@
 			//Create a SQL statement
 			Statement stmt = con.createStatement();
 			//Make an insert statement for the Sells table:
-			String insert = "INSERT INTO users(username, password, fname, lname, is_admin, is_customer, is_customer_rep)"
+			String insert = "INSERT INTO users(username, password, fname, lname, is_admin, is_customer_rep, is_customer)"
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
 			//Create a Prepared SQL statement allowing you to introduce the parameters of the query
 			PreparedStatement ps = con.prepareStatement(insert);

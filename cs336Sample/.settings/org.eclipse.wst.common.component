@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="cs336Sample">
+        
+    <wb-module deploy-name="cs336project">
+                
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+                
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
-        <property name="context-root" value="cs336Sample"/>
-        <property name="java-output-path" value="/cs336Sample/build/classes"/>
+                
+        <property name="java-output-path" value="/cs336project/build/classes"/>
+        <property name="context-root" value="cs336project"/>
+            
     </wb-module>
+    
 </project-modules>
