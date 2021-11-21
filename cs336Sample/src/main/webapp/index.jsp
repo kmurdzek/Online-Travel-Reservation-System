@@ -42,6 +42,7 @@
 		String message = request.getParameter("user_message");
 		if(message!=null && message.equals("Log out")){
 			session.invalidate(); 
+			System.out.println("Session Invalidated");
 		}
 	%>
 	<br>
