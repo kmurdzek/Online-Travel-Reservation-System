@@ -81,7 +81,8 @@ Connection con = db.getConnection();
 Statement check = con.createStatement();
 //confirm booking update customer ticket relationship update seat available
 String query = "";
-
+con.close();
+db.closeConnection(con);
 %>
 </body>
 </html>
