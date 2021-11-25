@@ -23,9 +23,9 @@
 	<input type = "text" id = "arrival_airport" name = "arrival_airport"><br><br>
 	
 	<label for = "departure_date">Departure Date:</label><br>
-	<input type = "text" id = "departure_date" name = "departure_date"><br>
+	<input type = "date"  value="yyyy-mm-dd" id = "departure_date" name = "departure_date"><br>
 	<label for = "arrival_airport">Return Date:</label><br>
-	<input type = "text" id = "return_date" name = "return_date"><br><br>
+	<input type = "date" id = "return_date" value="yyyy-mm-dd" name = "return_date"><br><br>
 	
 	<input type="radio" id="one-way" name="flight_type" value="One-Way">
   	<label for="one-way">One-Way</label><br>
@@ -34,17 +34,10 @@
 	<input type = "submit" value ="Get Flights">
 	</fieldset>
 	</form>
-	<form method="post" action="landingPage.jsp">
+	<form method="post" action="logout.jsp">
 	<br>
 	<br>
-	<input type="submit" name="user_message" value="Log out"/>
-		<%
-		String message = request.getParameter("user_message");
-		if(message!=null && message.equals("Log out")){
-			session.invalidate(); 
-			System.out.println("Session Invalidated");
-		}
-	%>
+	<input type="submit" value="Log out"/>
 	<br>
 	
 	</form>

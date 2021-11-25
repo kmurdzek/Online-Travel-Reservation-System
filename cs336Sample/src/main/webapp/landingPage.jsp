@@ -15,7 +15,7 @@
 		<%
 
 		String message = request.getParameter("user_message");
-		if(message == null||message.equals("Log out")){
+		if(message == null){
 			message = "Welcome please log in or create an account";
 		}
 		out.print(message); %> <!-- output the same thing, but using 
