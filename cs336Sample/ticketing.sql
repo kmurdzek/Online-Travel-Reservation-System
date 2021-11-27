@@ -59,9 +59,20 @@ airport_id varchar(5) primary key
 );
 drop table if exists ticket;
 create table ticket(
-ticket_id varchar(10) primary key,
-seat_number int
+ticket_id int,
+flight_number int references flight,
+seat varchar(3),
+price double,
+primary key(ticket_id, flight_number)
 );
+insert into ticket
+values
+(100,1, "A1",154.00),
+(101,1, "A2", 156.00)
+;
+select ticket_id, seat
+from ticket t
+where t.flight_number = 1;
 drop table if exists economy_class;
 create table economy_class(
 ticket_id varchar(10) primary key references ticket,
