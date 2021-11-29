@@ -47,6 +47,10 @@ insert into flight values
 (12, "2022-02-09", "9:00", "EWR", "2022-02-09", "8:00", "ORD", 0,  1,0),
 (13, "2022-02-09", "9:00", "EWR", "2022-02-09", "11:00", "ORD", 0,  1,0);
 
+insert into flight values
+(17, "2001-02-09", "9:00", "EWR", "2001-02-09", "7:00", "ORD", 0, 1,0),
+(18, "2001-02-09", "9:00", "EWR", "2001-02-09", "8:00", "ORD", 0,  1,0),
+(19, "2001-02-09", "9:00", "EWR", "2001-02-09", "11:00", "ORD", 0,  1,0);
 select * from flight;
 drop table if exists aircraft;
 create table aircraft(
@@ -69,18 +73,19 @@ flight_number int references flight,
 seat varchar(3),
 price double,
 available bool,
+class int,
 primary key(ticket_id, flight_number)
 );
 insert into ticket
 values
-(100,1, "A1",154.00,0),
-(101,1, "A2", 156.00,0),
-(109,5, "A4", 156.00,0),
-(10,6, "A3",154.00,0),
-(11,6, "A4", 156.00,0),
-(107,8, "F3",154.00,0),
-(108,8, "F4", 156.00,0),
-(106,8, "F8", 156.00,0)
+(100,1, "A1",154.00,0,0),
+(101,1, "A2", 156.00,0,0),
+(109,5, "A4", 156.00,0,0),
+(10,6, "A3",154.00,0,0),
+(11,6, "A4", 156.00,0,0),
+(107,8, "F3",154.00,0,0),
+(108,8, "F4", 156.00,0,0),
+(106,8, "F8", 156.00,0,0)
 ;
 select ticket_id, seat
 from ticket t
@@ -151,10 +156,6 @@ flight_number int primary key references flight,
 airline_id varchar(5) references airline
 );
 
-select * from purchases;
-show tables; 
-select *
-from users
 
 insert into users
 values('admin', 'adminpassword', 'John', 'Doe', true, false, false);
@@ -171,14 +172,3 @@ where f.departure_date = '2022-02-09' and
     f.arrival_airport = 'ORD'
 group by f.flight_number;
 
-SELECT f.departure_airport
-from(
-Select distinct f.flight_number, MIN(price) as price, f.*
-from flight f
-join ticket t on f.flight_number = t.flight_number 
-where f.departure_date = '2022-02-09' and 
-    f.departure_airport = 'EWR' and 
-    f.arrival_airport = 'ORD'
-group by f.flight_number
-) as T1
-ORDER BY f.arrival_time DESC;

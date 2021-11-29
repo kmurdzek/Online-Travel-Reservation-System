@@ -14,6 +14,7 @@
 %>
 
 	<h1>Welcome <% out.print(fullName); %></h1>
+
 	<form method ="post" action = "resultingFlights.jsp">
 	<fieldset>
 	<legend>Enter Desired Flight Information</legend>
@@ -39,9 +40,10 @@
 	<br>
 	<input type="submit" value="Log out"/>
 	<br>
-	
 	</form>
-	
+	<form method="post" action="viewAccount.jsp">
+	<input type="submit" value="My Account"/>
+	</form>
 
 </body>
 </html>

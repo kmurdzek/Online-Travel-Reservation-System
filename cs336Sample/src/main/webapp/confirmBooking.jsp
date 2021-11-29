@@ -16,6 +16,7 @@
 		Connection con = db.getConnection();	
 		Statement check = con.createStatement();
 		int departing_ticket_id = Integer.parseInt(request.getParameter("departing_ticket"));
+		int departing_class = Integer.parseInt(request.getParameter("departing_class"));
 		PreparedStatement statement = con.prepareStatement("insert into purchases values(?,?,?,?,?,?,?)");
 		statement.setString(1,(String)session.getAttribute("user"));
 		statement.setInt(2,departing_ticket_id);
@@ -26,11 +27,19 @@
 		statement.setDouble(5,0);
 		statement.setDouble(6,0);
 		statement.setDouble(7,0);
-		PreparedStatement statement_2 = con.prepareStatement("update ticket set available = 1 where ticket_id = ?");
-		statement_2.setInt(1,departing_ticket_id);
-		statement_2.executeUpdate();
-		if(session.getAttribute("flight_type").equals("Round_trip")){
+		statement.executeUpdate();
+		PreparedStatement statement_2 = con.prepareStatement("update ticket set available = 1, class = ? where ticket_id = ?");
+		statement_2.setInt(1, departing_class);
+		statement_2.setInt(2,departing_ticket_id);
+		
+		
+		
+		int val  = statement_2.executeUpdate();
+		System.out.println(val);
+		if(session.getAttribute("flight_type").equals("Round-Trip")){
+			
 			int returning_ticket_id = Integer.parseInt(request.getParameter("returning_ticket"));
+			int returning_class = Integer.parseInt(request.getParameter("returning_class"));
 			statement.setString(1,(String)session.getAttribute("user"));
 			statement.setInt(2,returning_ticket_id);   
 			statement.setDate(3, date);
@@ -40,8 +49,10 @@
 			statement.setDouble(7,0);
 			//statement puts connects the user and the ticket now we need to update ticket table
 			statement.executeUpdate();
-			statement_2.setInt(1,returning_ticket_id);
+			statement_2.setInt(1,returning_class);
+			statement_2.setInt(2,returning_ticket_id);
 			statement_2.executeUpdate();
+			
 		}
 		con.close();
 		db.closeConnection(con);

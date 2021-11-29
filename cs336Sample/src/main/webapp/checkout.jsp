@@ -58,6 +58,7 @@ session.setAttribute("seat_list", seat_list);
 <th>Arriving Date/Time</th>
 <th>Seats Available</th>
 <th>Select a Seat </th>
+<th>Select Class </th>
 </tr>
 
 <tr>
@@ -78,6 +79,13 @@ session.setAttribute("seat_list", seat_list);
         </c:forEach>
     </select>
 
+</td>
+<td> 
+<select name="departing_class">
+		<option value ="1">Economy Class</option>
+		<option value = "2">Business Class</option>
+		<option value = "3">First Class</option>
+    </select>
 </td>
 </tr>
 
@@ -113,6 +121,14 @@ if(returning_flight != null){
     </select>
 
 </td>
+<td> 
+<select name="returning_class">
+		<option value = "1">Economy Class</option>
+		<option value ="2">Business Class</option>
+		<option value = "3">First Class</option>
+    </select>
+</td>
+
 	</tr>
 	<%
 }
