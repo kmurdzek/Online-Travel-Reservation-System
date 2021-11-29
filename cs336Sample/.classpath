@@ -6,10 +6,16 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="lib" path="/Applications/NetBeans/glassfish-4.1.1/mq/lib/javax.servlet-api.jar"/>
 	<classpathentry kind="lib" path="/Users/kacpermurdzek/Downloads/jakarta.servlet-api-5.0.0.jar"/>
 	<classpathentry kind="lib" path="/Users/kacpermurdzek/Downloads/javax.servlet.jsp.jar"/>
+	<classpathentry kind="lib" path="/Users/kacpermurdzek/Downloads/jstl.jar"/>
+	<classpathentry kind="lib" path="/Users/kacpermurdzek/Downloads/taglibs-standard-impl-1.2.5.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
