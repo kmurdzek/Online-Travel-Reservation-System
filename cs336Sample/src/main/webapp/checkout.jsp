@@ -29,7 +29,10 @@
 <body>
 <%
 String departing_flight = request.getParameter("flight0");
+session.setAttribute("departing_flight_number", departing_flight);
 String dep = (String)session.getAttribute("departure"+departing_flight);
+String returning_flight= request.getParameter("flight1");
+session.setAttribute("returning_flight_number", returning_flight);
 ApplicationDB db = new ApplicationDB();	
 Connection con = db.getConnection();	
 List <Ticket> seat_list = new ArrayList<Ticket>();
@@ -46,7 +49,19 @@ session.setAttribute("seat_list", seat_list);
 
 %>
 <h1>Here is your selected flight <% out.print((String)session.getAttribute("name")); %></h1>
-<form action="confirmBooking.jsp" method="post">
+
+<%
+//check if either flights are full, if they are then the user must join the wait list for the flight
+int departing_seats = Integer.parseInt((String)session.getAttribute("occupied_seats"+departing_flight));
+int returning_seats =  Integer.parseInt((String)session.getAttribute("occupied_seats"+returning_flight));
+if(departing_seats == 0 || returning_seats ==0){
+	out.print("<form action=joinWaitlist.jsp method=post>");
+}else{
+	out.print("<form action=confirmBooking.jsp method=post>");
+}
+%>
+
+
 <table>
 
 <tr>
@@ -90,7 +105,7 @@ session.setAttribute("seat_list", seat_list);
 </tr>
 
 <%
-String returning_flight= request.getParameter("flight1");
+
 if(returning_flight != null){
 	//means its a one way
 	List <Ticket> seat_list_2 = new ArrayList<Ticket>();
@@ -135,7 +150,13 @@ if(returning_flight != null){
 %>
 </table>
         <br/><br/>
-    <input type="submit" value="Confirm Booking" />
+<% if(departing_seats == 0 || returning_seats ==0){
+	out.print("<input type=submit value='Join Waitlist' />");
+}else{
+	out.print("<input type=submit value='Confirm Booking' />");
+}
+   
+    %>
     </form>
 
 

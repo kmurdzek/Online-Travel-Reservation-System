@@ -43,6 +43,9 @@ populate_table(past_flights, out, 1, session);
 //need a query to get the users past flights
 //going to join the purchases table with the flight table
 //also get the seat that the user is assigned to from the ticket table
+
+//possibly display flights that were waitlisted on, if the flight is no longer full possibly allow to book
+//it
 %>
 </body>
 </html>
@@ -78,7 +81,9 @@ populate_table(past_flights, out, 1, session);
 	out.print("<th>");
 	out.print("Your Seat");
 	out.print("</th>");
-
+	out.print("<th>");
+	out.print("Class");
+	out.print("</th>");
 	
 	out.print("</tr>");
 	out.print("</tr>");
