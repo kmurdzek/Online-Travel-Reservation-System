@@ -52,13 +52,24 @@ session.setAttribute("seat_list", seat_list);
 
 <%
 //check if either flights are full, if they are then the user must join the wait list for the flight
+int returning_seats = 1;
 int departing_seats = Integer.parseInt((String)session.getAttribute("occupied_seats"+departing_flight));
-int returning_seats =  Integer.parseInt((String)session.getAttribute("occupied_seats"+returning_flight));
-if(departing_seats == 0 || returning_seats ==0){
-	out.print("<form action=joinWaitlist.jsp method=post>");
+if(returning_flight!= null){
+	returning_seats =  Integer.parseInt((String)session.getAttribute("occupied_seats"+returning_flight));
+	if(departing_seats == 0 || returning_seats ==0){
+		out.print("<form action=joinWaitlist.jsp method=post>");
+	}else{
+		out.print("<form action=confirmBooking.jsp method=post>");
+	}
 }else{
-	out.print("<form action=confirmBooking.jsp method=post>");
+	if(departing_seats == 0){
+		out.print("<form action=joinWaitlist.jsp method=post>");
+	}else{
+		out.print("<form action=confirmBooking.jsp method=post>");
+		returning_seats = 1;
+	}
 }
+
 %>
 
 
@@ -115,7 +126,7 @@ if(returning_flight != null){
 	    String seat = result_2.getString("seat");   
 	    int ticket_id = result_2.getInt("ticket_id");
 	    seat_list_2.add(new Ticket(ticket_id, seat));
-	} 
+	 
 	session.setAttribute("seat_list_2", seat_list_2);
 	%>
 	<tr>
@@ -147,10 +158,13 @@ if(returning_flight != null){
 	</tr>
 	<%
 }
+}
 %>
 </table>
         <br/><br/>
-<% if(departing_seats == 0 || returning_seats ==0){
+<% 
+
+if(departing_seats == 0 || returning_seats ==0){
 	out.print("<input type=submit value='Join Waitlist' />");
 }else{
 	out.print("<input type=submit value='Confirm Booking' />");

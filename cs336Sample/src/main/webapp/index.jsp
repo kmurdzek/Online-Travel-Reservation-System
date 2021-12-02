@@ -19,19 +19,19 @@
 		<fieldset>
 			<legend>Enter Desired Flight Information</legend>
 				<label for = "departure_airport">Departure Airport:<br>
-					<input type = "text" id = "departure_airport" name = "departure_airport" size="1"><br>
+					<input type = "text" id = "departure_airport" name = "departure_airport" size="4"><br>
 					</label>
 				<label for = "arrival_airport">Arrival Airport:<br>
-					<input type = "text" id = "arrival_airport" name = "arrival_airport" size="1"><br><br>
+					<input type = "text" id = "arrival_airport" name = "arrival_airport" size="4"><br><br>
 					</label>
 	
 				<label for = "departure_date">Departure Date:</label><br>
-					<input type = "date"  value="" placeholder="yyyy-mm-dd" id = "departure_date" name = "departure_date" size = "8"><br>
+					<input type = "date"  value="" placeholder="yyyy-mm-dd" id = "departure_date" name = "departure_date" size = "10"><br>
 				<label for = "departure_date_flexibility">Departure Date Flexibility</label><br>
 					<input type = "number" id = "departure_date_flexibility" name = "departure_date_flexibility" value ="0" min="0" max="365" step = "1" size="1"><label> Days</label><br> <br>
 					
 				<label for = "return_date">Return Date:</label><br>
-					<input type = "date"  value=""  placeholder="yyyy-mm-dd" id = "return_date" name = "return_date" size = "8"><br>
+					<input type = "date"  value=""  placeholder="yyyy-mm-dd" id = "return_date" name = "return_date" size = "10"><br>
 				<label for = "return_date_flexibility">Return Date Flexibility</label><br>
 					<input type = "number" id = "return_date_flexibility" name = "return_date_flexibility" value ="0" min="0" max="365" step = "1" size="1"><label> Days</label><br> <br>
 					

@@ -44,6 +44,7 @@
 	String departure_date_max = null;
 	String return_date_min = null;
 	String return_date_max = null;
+	String flight_type = request.getParameter("flight_type");
 	
 	if (departure_date_flexibility != null){
 		int dep_date_flexibility_int = Integer.parseInt(departure_date_flexibility);
@@ -67,6 +68,7 @@
 		departure_date_min = format.format(m_d_date);  //////////////
 		
 		//////////////////////////////////////////////////////////////////////
+		if(flight_type.equals("Round-Trip")){
 		Date return_date_as_formatted = format.parse(return_date);
 		c.setTime(return_date_as_formatted);
 		c.add(Calendar.DATE, ret_date_flexibility_int);
@@ -80,6 +82,7 @@
 		Calendar min_ret_date = c;
 		Date m_r_date = min_ret_date.getTime();
 		return_date_min = format.format(m_r_date);
+		}
 	}
 	
 
@@ -95,7 +98,7 @@
 	
 	String departure_airport = request.getParameter("departure_airport");
 	String arrival_airport = request.getParameter("arrival_airport");
-	String flight_type = request.getParameter("flight_type");
+
 	
 	String sort_by;
 	if (request.getParameter("sort_by") != null){

@@ -55,6 +55,9 @@ populate_table(past_flights, out, 1, session);
 	out.print("<tr>");
 	//make a column
 	out.print("<th>");
+	out.print("Ticket id");
+	out.print("</th>");
+	out.print("<th>");
 	out.print("Flight Number");
 	out.print("</th>");
 	out.print("<th>");
@@ -84,12 +87,21 @@ populate_table(past_flights, out, 1, session);
 	out.print("<th>");
 	out.print("Class");
 	out.print("</th>");
+	out.print("<th>");
+	out.print("Cancel Flight");
+	out.print("</th>");
 	
 	out.print("</tr>");
 	out.print("</tr>");
+	
 	while(result.next()){
+		
 		out.print("<tr>");
-
+		String ticket_id = result.getString("ticket_id");
+		out.print("<td><label name = ticket_id value = "+ticket_id+"/>");
+		out.print(ticket_id);
+		out.print("</td>");
+		
 		String flightNum = result.getString("flight_number");
 		out.print("<td>");
 		out.print(flightNum);
@@ -97,43 +109,36 @@ populate_table(past_flights, out, 1, session);
 		
 		String depart = result.getString("departure_airport");
 		out.print("<td><label name = 'departure"+flightNum+"' value = "+depart+"/>");
-		session.setAttribute("departure"+flightNum, depart);
 		out.print(depart);
 		out.print("</td>");
 		
 		String arrive = result.getString("arrival_airport");
 		out.print("<td name = arrival"+flightNum+" value = "+arrive+"'>");
-		session.setAttribute("arrival"+flightNum, arrive);
 		out.print(arrive);
 		out.print("</td>");
 		
 		String departure_date = result.getString("departure_date");
 		out.print("<td name = depart_date"+flightNum+" value = "+departure_date+">");
-		session.setAttribute("depart_date"+flightNum, departure_date);
 		out.print(departure_date);
 		out.print("</td>");
 		
 		String departure_time = result.getString("departure_time");
 		out.print("<td name = depart_time"+flightNum+" value = "+departure_time+">");
-		session.setAttribute("depart_time"+flightNum, departure_time);
 		out.print(departure_time);
 		out.print("</td>");
 		
 		String arrival_date = result.getString("arrival_date");
 		out.print("<td name = arrival_date"+flightNum+" value = "+arrival_date+">");
-		session.setAttribute("arrival_date"+flightNum, arrival_date);
 		out.print(arrival_date);
 		out.print("</td>");
 		
 		String arrival_time = result.getString("arrival_time");
 		out.print("<td name = arrival_time"+flightNum+" value = "+arrival_time+">");
-		session.setAttribute("arrival_time"+flightNum, arrival_time);
 		out.print(arrival_time);
 		out.print("</td>");
 		
 		String seat = result.getString("seat");
 		out.print("<td name = seat"+flightNum+" value = "+seat+">");
-		session.setAttribute("seat"+flightNum, seat);
 		out.print(seat);
 		out.print("</td>");
 		
@@ -150,10 +155,19 @@ populate_table(past_flights, out, 1, session);
 			type_string = "First Class";
 			break;
 		}
+		
 			
-		out.print("<td name = seat"+flightNum+" value = "+type_string+""+">");
-		session.setAttribute("seat"+flightNum, type_string+"");
+		out.print("<td name = class"+flightNum+" value = "+type_string+""+">");
+		session.setAttribute("class"+flightNum, type_string+"");
 		out.print(type_string);
+		out.print("</td>");
+		
+		out.print("<td>");
+		out.print("<form action = cancelFlight.jsp method= post >");
+		out.print("<input type='submit' name='command' value='Cancel'/>");
+		out.print("<input type=hidden name=ticket_id value='"+ticket_id+"'>");
+		out.print("<input type=hidden name=class value='"+type_string+"'>");
+		out.print("</form>");
 		out.print("</td>");
 		/*
 		String price = result.getString("price");
