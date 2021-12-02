@@ -2,6 +2,8 @@
 	pageEncoding="ISO-8859-1" import="com.cs336.pkg.*"%>
     <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*, javax.servlet.jsp.*, javax.servlet.http.HttpSession"%>
+<%@ page import ="java.time.LocalDateTime, java.time.format.DateTimeFormatter, java.time.Duration"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,43 +34,44 @@
 	String fullName = (String)session.getAttribute("name");
 	
 	%><h1>Check the available flights <% out.print(fullName); %></h1><%
+	
 	String departure_date = request.getParameter("departure_date");
-	if (session.getAttribute("departure_date") == null){
-		session.setAttribute("departure_date", departure_date);	
-	}
 	String return_date = request.getParameter("return_date");
-	if (session.getAttribute("return_date") == null){
-		session.setAttribute("return_date", return_date);	
-	}
 	String departure_airport = request.getParameter("departure_airport");
-	if (session.getAttribute("departure_airport") == null){
-		session.setAttribute("departure_airport", departure_airport);	
+	String arrival_airport = request.getParameter("arrival_airport");
+	String flight_type = request.getParameter("flight_type");
+	
+	String sort_by;
+	if (request.getParameter("sort_by") != null){
+		sort_by = request.getParameter("sort_by");
+	}
+	else{
+		sort_by = "none";
 	}
 	
-	String arrival_airport = request.getParameter("arrival_airport");
-	if(session.getAttribute("arrival_airport") == null){
-		session.setAttribute("arrival_airport", arrival_airport);	
-	}
-	String flight_type = request.getParameter("flight_type");
-	if(session.getAttribute("flight_type") == null){
-		session.setAttribute("flight_type", flight_type);	
-	}
-	String sort_by = request.getParameter("sort_by");
 	if (departure_date == null){
 		departure_date = (String)session.getAttribute("departure_date");
-		return_date = (String)session.getAttribute("return_date");	
-		departure_airport = (String)session.getAttribute("departure_airport");	
-		arrival_airport = (String)session.getAttribute("arrival_airport");
-		flight_type = (String)session.getAttribute("flight_type");
-		
 	}
+	if (return_date == null){
+		return_date = (String)session.getAttribute("return_date");	
+	}
+	if (departure_airport == null){
+		departure_airport = (String)session.getAttribute("departure_airport");	
+	}
+	if (arrival_airport == null){
+		arrival_airport = (String)session.getAttribute("arrival_airport");
+	}
+	if (flight_type == null){
+		flight_type = (String)session.getAttribute("flight_type");
+	}
+	
 	try{
 		ApplicationDB db = new ApplicationDB();	
 		Connection con = db.getConnection();	
+
 		//if the flight is round trip just run the query get flights on the 
 		//return date
 		Statement check = con.createStatement();
-		
 		PreparedStatement update_seats = con.prepareStatement("update flight f set f.occupied_seats = (select count(*) from ticket t where t.available = 0 and t.flight_number = f.flight_number and f.departure_date = ? and f.departure_airport = ? and f.arrival_airport = ? )");
 
 		update_seats.setDate(1, java.sql.Date.valueOf(departure_date));
@@ -76,44 +79,95 @@
 		update_seats.setString(3, arrival_airport);
 		update_seats.executeUpdate();
 		
-		
 		ResultSet result = executeQueryHelper(sort_by, departure_date, departure_airport, arrival_airport, con);
 		//ResultSet result = check.executeQuery(departure_flight); // executes query
-		
 		
 		ResultSet result_2 = null;
 		out.print("<th>");
 		out.print("Sort By ");
 		
 		out.print("<form name =sort  method =get action =resultingFlights.jsp>");
-		//out.print("<select name = \"sort_by\"  onchange = \"response.setHeader(\"Refresh\", \"0; URL=http://localhost:8080/cs336project/resultingFlights.jsp\") >");
 		out.print("<select name = sort_by id =sorting_options >");	
-		out.print("<option value = \"None\">None</option>");
-		out.print("<option value = \"price_low_to_high\">Price(Low to high)</option>");
-		out.print("<option value = \"price_high_to_low\">Price(High to Low)</option>");
-		out.print("<option value = \"take_off_time_earliest_first\">Take off time (earliest first)</option>");
-		out.print("<option value = \"take_off_time_latest_first\">Take off time (latest first)</option>");
-		out.print("<option value = \"landing_time_earliest_first\">Landing Time (earliest first)</option>");
-		out.print("<option value = \"landing_time_latest_first\">Landing Time (latest first)</option>");
-		out.print("<option value = \"duration_of_flight_shortest_first\">Duration of flight (shortest first)</option>");
-		out.print("<option value = \"duration_of_flight_longest_first\">Duration of flight (longest first)</option>");	
+		
+		if (sort_by.equals("none")){
+			out.print("<option value = \"none\" selected>None</option>");
+
+		}
+		else{
+			out.print("<option value = \"none\" >None</option>");
+		}
+		
+		if (sort_by.equals("price_low_to_high")){
+			out.print("<option value = \"price_low_to_high\" selected>Price(Low to high)</option>");	
+		}
+		else{
+			out.print("<option value = \"price_low_to_high\">Price(Low to high)</option>");
+		}
+		
+		if (sort_by.equals("price_high_to_low")){
+			out.print("<option value = \"price_high_to_low\" selected>Price(High to Low)</option>");
+		}
+		else{
+			out.print("<option value = \"price_high_to_low\">Price(High to Low)</option>");	
+		}
+		
+		if (sort_by.equals("take_off_time_earliest_first")){
+			out.print("<option value = \"take_off_time_earliest_first\" selected>Take off time (earliest first)</option>");
+		}
+		else{
+			out.print("<option value = \"take_off_time_earliest_first\">Take off time (earliest first)</option>");	
+		}
+		
+		if (sort_by.equals("take_off_time_latest_first")){
+			out.print("<option value = \"take_off_time_latest_first\" selected>Take off time (latest first)</option>");
+		}
+		else{
+			out.print("<option value = \"take_off_time_latest_first\">Take off time (latest first)</option>");	
+		}
+		
+		if(sort_by.equals("landing_time_earliest_first")){
+			out.print("<option value = \"landing_time_earliest_first\" selected>Landing Time (earliest first)</option>");
+		}
+		else{
+			out.print("<option value = \"landing_time_earliest_first\">Landing Time (earliest first)</option>");	
+		}
+		
+		if (sort_by.equals("landing_time_latest_first")){
+			out.print("<option value = \"landing_time_latest_first\" selected>Landing Time (latest first)</option>");	
+		}
+		else{
+			out.print("<option value = \"landing_time_latest_first\">Landing Time (latest first)</option>");
+		}
+		
+		if (sort_by.equals("duration_of_flight_shortest_first")){
+			out.print("<option value = \"duration_of_flight_shortest_first\" selected>Duration of flight (shortest first)</option>");		
+		}
+		else{
+			out.print("<option value = \"duration_of_flight_shortest_first\">Duration of flight (shortest first)</option>");	
+		}
+		
+		if (sort_by.equals("duration_of_flight_longest_first")){
+			out.print("<option value = \"duration_of_flight_longest_first\" selected>Duration of flight (longest first)</option>");	
+		}
+		else{
+			out.print("<option value = \"duration_of_flight_longest_first\">Duration of flight (longest first)</option>");				
+		}
 
 		out.print("</select>");
 		out.print("<input type=submit name=sort_submit value=Sort >");
 		out.print("</form>");
-		//session.setAttribute("sort_by", session.getAttribute(“sort_by”));
-		
-		//if (session.getAttribute("sort_by") != null){
-		//	RequestDispatcher rd = (javax.servlet.RequestDispatcher)request.getRequestDispatcher("resultingFlights.jsp"); 
-		//	rd.forward(request, response);			
-		//}
-		
 		
 		out.print("</th>");
 		out.print("<form method= post action = checkout.jsp>");
-		if(flight_type.equals("Round-Trip")){
-			//run it once dont let user not check an option
 
+		try{
+		if(flight_type.equals("Round-Trip")){
+			session.setAttribute("flight_type", flight_type);
+			session.setAttribute("return_date", return_date);	
+			session.setAttribute("departure_date", departure_date);	
+			session.setAttribute("departure_airport", departure_airport);
+			session.setAttribute("arrival_airport", arrival_airport);
+			
 			update_seats.setDate(1, java.sql.Date.valueOf(return_date));
 			update_seats.setString(2, arrival_airport);
 			update_seats.setString(3, departure_airport);
@@ -121,15 +175,28 @@
 	
 			%><h2>Departing Flights</h2><%
 			
-			populate_table(result, out,0,session);
+			populate_table(result, out,0,session, sort_by);
 			result_2 = executeQueryHelper(sort_by, return_date, arrival_airport,departure_airport, con);
 			//result_2 = check.executeQuery(arrival_flight);
 			%><h2>Returning Flights</h2><%
-			populate_table(result_2, out,1,session);		
+			populate_table(result_2, out,1,session, sort_by);	
+
 		}else{
 			%><h2>Departing Flights</h2><%
-			populate_table(result, out,0,session);
+			session.setAttribute("flight_type", flight_type);
+			session.setAttribute("return_date", return_date);	
+			session.setAttribute("departure_date", departure_date);	
+			session.setAttribute("departure_airport", departure_airport);
+			session.setAttribute("arrival_airport", arrival_airport);
+
+			populate_table(result, out,0,session, sort_by);
+
+			}
 		}
+		catch (Exception e){
+			System.out.println(e);
+		}
+		
 		out.print("<input type='submit' name='command' value='Book Tickets'/>");
 		out.print("</form>");
 		//populates the departing table
@@ -144,13 +211,17 @@
 	
 //	out.print(message);
 %>
-<%! void populate_table(ResultSet result,JspWriter out, int type, HttpSession session){
+<%! void populate_table(ResultSet result,JspWriter out, int type, HttpSession session, String sort_by){
+
 	try{
 	out.print("<table>");
 	out.print("<tr>");
 	//make a column
 	out.print("<th>");
 	out.print("Select");
+	out.print("</th>");
+	out.print("<th>");
+	out.print("Airline");
 	out.print("</th>");
 	out.print("<th>");
 	out.print("Flight Number");
@@ -176,25 +247,40 @@
 	out.print("<th>");
 	out.print("Arriving Time");
 	out.print("</th>");
+	
+	out.print("<th>");
+	out.print("Flight Duration");
+	out.print("</th>");
+	
 	out.print("<th>");
 	out.print("Seats Available");
 	out.print("</th>");
 	out.print("<th>");
-	out.print("Tickets Pricing From");
+	out.print("Price");
 	out.print("</th>");
 
 	
 	out.print("</tr>");
 	out.print("</tr>");
+	
 	while(result.next()){
 		out.print("<tr>");
 
+
+		
 		String flightNum = result.getString("flight_number");
 		out.print("<td>");
 		out.print(" <input type= radio name=flight"+type+" value="+flightNum+"> ");
 		session.setAttribute("flight_number"+flightNum, flightNum);
 		
-		System.out.println("flight_number"+flightNum);
+//		System.out.println("flight_number"+flightNum);
+		out.print("</td>");
+		
+		String airline_id = result.getString("airline_id");
+		session.setAttribute("airline_id"+airline_id, airline_id);
+
+		out.print("<td name = arrival"+airline_id+" value = "+airline_id+"'>");
+		out.print(airline_id);
 		out.print("</td>");
 		
 		out.print("<td>");
@@ -237,18 +323,25 @@
 		out.print(arrival_time);
 		out.print("</td>");
 		
+		String flight_duration = result.getString("flight_duration");
+		out.print("<td name = flight_duration"+flightNum+" value = "+flight_duration+">");
+		session.setAttribute("flight_duration"+flightNum, flight_duration);
+		out.print(flight_duration + " hours");
+		out.print("</td>");
+		
+		
 		String occupied_seats = result.getString("occupied_seats");
 		out.print("<td name = occupied_seats"+flightNum+" value = "+occupied_seats+">");
 		session.setAttribute("occupied_seats"+flightNum, occupied_seats);
 		out.print(occupied_seats);
 		out.print("</td>");
-		/*
+		
 		String price = result.getString("price");
 		out.print("<td name = price"+flightNum+" value = "+price+">");
 		session.setAttribute("price"+flightNum, price);
 		out.print("$"+price);
 		out.print("</td>");
-		*/
+		
 		out.print("</tr>");
 	}
 	out.print("</table>");
@@ -266,34 +359,46 @@
 			+" and f.arrival_airport = '" + arrival_airport + "'";
 			
 		
-	if (sort_by == null){
-		//departure_flight = "SELECT * from flight f where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "'"; //query to check
-		departure_flight = "SELECT * from flight f where f.departure_date = '"+ departure_date 
-				+" ' and f.departure_airport = '" + departure_airport+"'"
-				+" and f.arrival_airport = '" + arrival_airport + "'";
-		
-		
-		System.out.println(departure_flight);
-				
+	if (sort_by.equals("none")){
+		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"' and f.arrival_airport = '" + arrival_airport + "' GROUP BY f.flight_number ORDER BY RAND() ";
+		//shows one of each flight, whichever ticket it grabs first
 	}
 	else if (sort_by.equals("price_low_to_high")){
-		departure_flight = "SELECT distinct f.flight_number, MIN(price) as price, f.* from flight f join ticket t on f.flight_number = t.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number " ;
+		//departure_flight = "SELECT distinct f.flight_number, MIN(price) as price, f.* from flight f join ticket t on f.flight_number = t.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' GROUP BY f.flight_number " ;
+		departure_flight = "SELECT distinct f.flight_number, MIN(price) as price, o.*, f.*, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY price" ;
+		System.out.println(departure_flight);
 	}
 	else if (sort_by.equals("price_high_to_low")){
-		departure_flight = "SELECT distinct f.flight_number, MAX(price) as price, f.* from flight f join ticket t on f.flight_number = t.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number " ; 
+		departure_flight = "SELECT distinct f.flight_number, MAX(price) as price,o.*,f.*, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY price DESC" ; 
 	}
 	else if (sort_by.equals("take_off_time_earliest_first")){
-		departure_flight = "SELECT * from flight f where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' ORDER BY f.departure_time " ;
+		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY f.departure_time " ;
+
+		//departure_flight = "SELECT * from flight f where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' ORDER BY f.departure_time " ;
 	}
 	else if (sort_by.equals("take_off_time_latest_first")){
-		departure_flight = "SELECT * from flight f where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' ORDER BY f.departure_time DESC" ;
+		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY f.departure_time DESC" ;
+
+		//departure_flight = "SELECT * from flight f where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' ORDER BY f.departure_time DESC" ;
 	}
 	else if (sort_by.equals("landing_time_earliest_first")){
-		departure_flight = "SELECT * from flight f where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' ORDER BY f.arrival_time" ;
+		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY f.arrival_time" ;
+
+		//departure_flight = "SELECT * from flight f where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' ORDER BY f.arrival_time" ;
 	}
 	else if (sort_by.equals("landing_time_latest_first")){
-		departure_flight = "SELECT * from flight f where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' ORDER BY f.arrival_time DESC" ;
+		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY f.arrival_time DESC" ;
+
+		//departure_flight = "SELECT * from flight f where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' ORDER BY f.arrival_time DESC" ;
 	}
+	else if (sort_by.equals("duration_of_flight_shortest_first")){
+		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY flight_duration" ;
+	}
+	else if (sort_by.equals("duration_of_flight_longest_first")){
+		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY flight_duration DESC" ;
+
+	}
+	
 	ResultSet returning = check.executeQuery(departure_flight);
 	return returning;
 	}catch(SQLException e){
