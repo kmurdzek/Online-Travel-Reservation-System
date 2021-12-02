@@ -3,6 +3,7 @@
     <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*, javax.servlet.jsp.*, javax.servlet.http.HttpSession"%>
 <%@ page import ="java.time.LocalDateTime, java.time.format.DateTimeFormatter, java.time.Duration"%>
+<%@ page import ="java.text.SimpleDateFormat,java.util.Date" %>
 
 <!DOCTYPE html>
 <html>
@@ -35,8 +36,63 @@
 	
 	%><h1>Check the available flights <% out.print(fullName); %></h1><%
 	
+	String departure_date_flexibility = request.getParameter("departure_date_flexibility");
+	String return_date_flexibility = request.getParameter("return_date_flexibility");
 	String departure_date = request.getParameter("departure_date");
 	String return_date = request.getParameter("return_date");
+    String departure_date_min = null;
+	String departure_date_max = null;
+	String return_date_min = null;
+	String return_date_max = null;
+	
+	if (departure_date_flexibility != null){
+		int dep_date_flexibility_int = Integer.parseInt(departure_date_flexibility);
+		int ret_date_flexibility_int = Integer.parseInt(return_date_flexibility);
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");  
+	    ///////////////////////////////////////////////////////////////////////////
+		Date departure_date_as_formatted = format.parse(departure_date);
+		
+		Calendar c = Calendar.getInstance();
+		c.setTime(departure_date_as_formatted);
+		c.add(Calendar.DATE, dep_date_flexibility_int);
+		Calendar max_dep_date = c;
+		Date m_d_d_date = max_dep_date.getTime();
+		departure_date_max = format.format(m_d_d_date);   ///////////
+		//System.out.println(departure_date);
+
+		c.setTime(departure_date_as_formatted);
+		c.add(Calendar.DATE, 0-dep_date_flexibility_int);
+		Calendar min_dep_date = c;
+		Date m_d_date = min_dep_date.getTime();
+		departure_date_min = format.format(m_d_date);  //////////////
+		
+		//////////////////////////////////////////////////////////////////////
+		Date return_date_as_formatted = format.parse(return_date);
+		c.setTime(return_date_as_formatted);
+		c.add(Calendar.DATE, ret_date_flexibility_int);
+		Calendar max_ret_date = c;
+		Date m_r_r_date = max_ret_date.getTime();
+		return_date_max = format.format(m_r_r_date);
+		
+		c.setTime(departure_date_as_formatted);
+		System.out.println(0-ret_date_flexibility_int);
+		c.add(Calendar.DATE, 0-ret_date_flexibility_int);
+		Calendar min_ret_date = c;
+		Date m_r_date = min_ret_date.getTime();
+		return_date_min = format.format(m_r_date);
+	}
+	
+
+	
+//	System.out.println(departure_date_min);
+	//System.out.println(departure_date);
+	//System.out.println(departure_date_max);
+//	System.out.println(return_date_min);
+	//System.out.println(return_date);
+	//System.out.println(return_date_max);
+	
+
+	
 	String departure_airport = request.getParameter("departure_airport");
 	String arrival_airport = request.getParameter("arrival_airport");
 	String flight_type = request.getParameter("flight_type");
@@ -64,6 +120,18 @@
 	if (flight_type == null){
 		flight_type = (String)session.getAttribute("flight_type");
 	}
+	if (return_date_min == null){
+		return_date_min = (String)session.getAttribute("return_date_min");
+	}
+	if (return_date_max == null){
+		return_date_max = (String)session.getAttribute("return_date_max");
+	}
+	if (departure_date_min == null){
+		departure_date_min = (String)session.getAttribute("return_date_min");
+	}
+	if (departure_date_max == null){
+		departure_date_max = (String)session.getAttribute("return_date_max");
+	}
 	
 	try{
 		ApplicationDB db = new ApplicationDB();	
@@ -79,7 +147,7 @@
 		update_seats.setString(3, arrival_airport);
 		update_seats.executeUpdate();
 		
-		ResultSet result = executeQueryHelper(sort_by, departure_date, departure_airport, arrival_airport, con);
+		ResultSet result = executeQueryHelper(sort_by, departure_date_min,departure_date,departure_date_max, departure_airport, arrival_airport, con);
 		//ResultSet result = check.executeQuery(departure_flight); // executes query
 		
 		ResultSet result_2 = null;
@@ -167,6 +235,11 @@
 			session.setAttribute("departure_date", departure_date);	
 			session.setAttribute("departure_airport", departure_airport);
 			session.setAttribute("arrival_airport", arrival_airport);
+			session.setAttribute("return_date_max", return_date_max);
+			session.setAttribute("return_date_min", return_date_min);
+			session.setAttribute("departure_date_max", departure_date_max);
+			session.setAttribute("departure_date_min", departure_date_min);
+			
 			
 			update_seats.setDate(1, java.sql.Date.valueOf(return_date));
 			update_seats.setString(2, arrival_airport);
@@ -176,7 +249,7 @@
 			%><h2>Departing Flights</h2><%
 			
 			populate_table(result, out,0,session, sort_by);
-			result_2 = executeQueryHelper(sort_by, return_date, arrival_airport,departure_airport, con);
+			result_2 = executeQueryHelper(sort_by, return_date_min, return_date, return_date_max, arrival_airport,departure_airport, con);
 			//result_2 = check.executeQuery(arrival_flight);
 			%><h2>Returning Flights</h2><%
 			populate_table(result_2, out,1,session, sort_by);	
@@ -188,6 +261,11 @@
 			session.setAttribute("departure_date", departure_date);	
 			session.setAttribute("departure_airport", departure_airport);
 			session.setAttribute("arrival_airport", arrival_airport);
+			session.setAttribute("return_date_max", return_date_max);
+			session.setAttribute("return_date_min", return_date_min);
+			session.setAttribute("departure_date_max", departure_date_max);
+			session.setAttribute("departure_date_min", departure_date_min);
+	
 
 			populate_table(result, out,0,session, sort_by);
 
@@ -276,11 +354,11 @@
 //		System.out.println("flight_number"+flightNum);
 		out.print("</td>");
 		
-		String airline_id = result.getString("airline_id");
-		session.setAttribute("airline_id"+airline_id, airline_id);
+		String airline_name = result.getString("airline_name");
+		session.setAttribute("airline_name"+airline_name, airline_name);
 
-		out.print("<td name = arrival"+airline_id+" value = "+airline_id+"'>");
-		out.print(airline_id);
+		out.print("<td name = arrival"+airline_name+" value = "+airline_name+"'>");
+		out.print(airline_name);
 		out.print("</td>");
 		
 		out.print("<td>");
@@ -351,7 +429,7 @@
 	}
 }
 %>
-<%! ResultSet executeQueryHelper(String sort_by, String departure_date, String departure_airport, String arrival_airport, Connection con){
+<%! ResultSet executeQueryHelper(String sort_by, String departure_date_min, String departure_date, String departure_date_max, String departure_airport, String arrival_airport, Connection con){
 	try{
 	Statement check = con.createStatement();
 	String departure_flight = "SELECT * from flight f where f.departure_date = '"+ departure_date 
@@ -359,43 +437,44 @@
 			+" and f.arrival_airport = '" + arrival_airport + "'";
 			
 		
-	if (sort_by.equals("none")){
-		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"' and f.arrival_airport = '" + arrival_airport + "' GROUP BY f.flight_number ORDER BY RAND() ";
+	if (sort_by.equals("none")){																																																																																						
+																	
+		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number join airline a on a.airline_id = o.airline_id where f.departure_date >= '" + departure_date_min+" ' and f.departure_date <= '" + departure_date_max+"' and f.departure_airport = '" + departure_airport+"' and f.arrival_airport = '" + arrival_airport + "' GROUP BY f.flight_number ORDER BY RAND() ";
 		//shows one of each flight, whichever ticket it grabs first
 	}
 	else if (sort_by.equals("price_low_to_high")){
 		//departure_flight = "SELECT distinct f.flight_number, MIN(price) as price, f.* from flight f join ticket t on f.flight_number = t.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' GROUP BY f.flight_number " ;
-		departure_flight = "SELECT distinct f.flight_number, MIN(price) as price, o.*, f.*, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY price" ;
+		departure_flight = "SELECT distinct f.flight_number, MIN(price) as price, o.*, f.*,a.*, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number join airline a on a.airline_id = o.airline_id where f.departure_date >= '" + departure_date_min+" ' and f.departure_date <= '" + departure_date_max+"' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY price" ;
 		System.out.println(departure_flight);
 	}
 	else if (sort_by.equals("price_high_to_low")){
-		departure_flight = "SELECT distinct f.flight_number, MAX(price) as price,o.*,f.*, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY price DESC" ; 
+		departure_flight = "SELECT distinct f.flight_number, MAX(price) as price,o.*,f.*,a.*, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number join airline a on a.airline_id = o.airline_id where f.departure_date >= '" + departure_date_min+" ' and f.departure_date <= '" + departure_date_max+"' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY price DESC" ; 
 	}
 	else if (sort_by.equals("take_off_time_earliest_first")){
-		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY f.departure_time " ;
+		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number join airline a on a.airline_id = o.airline_id where f.departure_date >= '" + departure_date_min+" ' and f.departure_date <= '" + departure_date_max+"' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY f.departure_time " ;
 
 		//departure_flight = "SELECT * from flight f where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' ORDER BY f.departure_time " ;
 	}
 	else if (sort_by.equals("take_off_time_latest_first")){
-		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY f.departure_time DESC" ;
+		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number join airline a on a.airline_id = o.airline_id where f.departure_date >= '" + departure_date_min+" ' and f.departure_date <= '" + departure_date_max+"' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY f.departure_time DESC" ;
 
 		//departure_flight = "SELECT * from flight f where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' ORDER BY f.departure_time DESC" ;
 	}
 	else if (sort_by.equals("landing_time_earliest_first")){
-		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY f.arrival_time" ;
+		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number join airline a on a.airline_id = o.airline_id where f.departure_date >= '" + departure_date_min+" ' and f.departure_date <= '" + departure_date_max+"' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY f.arrival_time" ;
 
 		//departure_flight = "SELECT * from flight f where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' ORDER BY f.arrival_time" ;
 	}
 	else if (sort_by.equals("landing_time_latest_first")){
-		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY f.arrival_time DESC" ;
+		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number join airline a on a.airline_id = o.airline_id where f.departure_date >= '" + departure_date_min+" ' and f.departure_date <= '" + departure_date_max+"' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY f.arrival_time DESC" ;
 
 		//departure_flight = "SELECT * from flight f where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' ORDER BY f.arrival_time DESC" ;
 	}
 	else if (sort_by.equals("duration_of_flight_shortest_first")){
-		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY flight_duration" ;
+		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number join airline a on a.airline_id = o.airline_id where f.departure_date >= '" + departure_date_min+" ' and f.departure_date <= '" + departure_date_max+"' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY flight_duration" ;
 	}
 	else if (sort_by.equals("duration_of_flight_longest_first")){
-		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number where f.departure_date = '"+ departure_date +" ' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY flight_duration DESC" ;
+		departure_flight = "SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number join airline a on a.airline_id = o.airline_id where f.departure_date >= '" + departure_date_min+" ' and f.departure_date <= '" + departure_date_max+"' and f.departure_airport = '" + departure_airport+"'"+" and f.arrival_airport = '" + arrival_airport + "' and t.available = 0 GROUP BY f.flight_number ORDER BY flight_duration DESC" ;
 
 	}
 	
