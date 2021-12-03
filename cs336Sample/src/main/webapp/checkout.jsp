@@ -77,6 +77,7 @@ if(returning_flight!= null){
 
 <tr>
 <th></th>
+<th>Airline</th>
 <th>Flight Number</th>
 <th>Departure Airport</th>
 <th>Arrival Airport</th>
@@ -85,10 +86,12 @@ if(returning_flight!= null){
 <th>Seats Available</th>
 <th>Select a Seat </th>
 <th>Select Class </th>
+<th>Base Price</th>
 </tr>
 
 <tr>
 <td>Departing</td>
+<td><% out.print((String)session.getAttribute("airline_name"+departing_flight)); %> </td>
 <td><% out.print((String)session.getAttribute("flight_number"+departing_flight)); %> </td>
 <td><% out.print((String)session.getAttribute("departure"+departing_flight)); %> </td>
 <td><% out.print((String)session.getAttribute("arrival"+departing_flight)); %> </td>
@@ -109,10 +112,11 @@ if(returning_flight!= null){
 <td> 
 <select name="departing_class">
 		<option value ="1">Economy Class</option>
-		<option value = "2">Business Class</option>
-		<option value = "3">First Class</option>
+		<option value = "2">Business Class(+$10)</option>
+		<option value = "3">First Class(+$20)</option>
     </select>
 </td>
+<td><% out.print("$"+(String)session.getAttribute("price"+departing_flight)); %> </td>
 </tr>
 
 <%
@@ -126,11 +130,12 @@ if(returning_flight != null){
 	    String seat = result_2.getString("seat");   
 	    int ticket_id = result_2.getInt("ticket_id");
 	    seat_list_2.add(new Ticket(ticket_id, seat));
-	 
+	}
 	session.setAttribute("seat_list_2", seat_list_2);
 	%>
 	<tr>
 <td>Returning</td>
+<td><% out.print((String)session.getAttribute("airline_name"+returning_flight)); %> </td>
 <td><% out.print((String)session.getAttribute("flight_number"+returning_flight)); %> </td>
 <td><% out.print((String)session.getAttribute("departure"+returning_flight)); %> </td>
 <td><% out.print((String)session.getAttribute("arrival"+returning_flight)); %> </td>
@@ -150,14 +155,14 @@ if(returning_flight != null){
 <td> 
 <select name="returning_class">
 		<option value = "1">Economy Class</option>
-		<option value ="2">Business Class</option>
-		<option value = "3">First Class</option>
+		<option value ="2">Business Class(+$10)</option>
+		<option value = "3">First Class(+$20)</option>
     </select>
 </td>
-
+<td><% out.print("$"+(String)session.getAttribute("price"+returning_flight)); %> </td>
 	</tr>
 	<%
-}
+
 }
 %>
 </table>

@@ -41,16 +41,27 @@
 					//successful login
 					//con.close();
 					out.print("Login succeeded");
-					String fullNameQuery = "SELECT fname, lname FROM users WHERE username = '" + username + "'";
+					String fullNameQuery = "SELECT fname, lname, is_admin, is_customer_rep, is_customer FROM users WHERE username = '" + username + "'";
 					result = check.executeQuery(fullNameQuery);
 					result.next();
 					String fName = result.getString("fname");
 					String lName = result.getString("lname");
+					boolean isAdmin = result.getBoolean("is_admin");
+					boolean isCustomerRep = result.getBoolean("is_customer_rep");
+					boolean isCustomer = result.getBoolean("is_customer");
 					String fullName = fName + " " + lName; 
 					//here we would start a session for the user
 					session.setAttribute("user", username);
 					session.setAttribute("name", fullName);
-					response.sendRedirect("index.jsp");
+					if (isAdmin){
+						response.sendRedirect("adminIndex.jsp");
+					}else if(isCustomerRep){
+						response.sendRedirect("customerRepIndex.jsp");
+					}else{
+						response.sendRedirect("index.jsp");
+					}
+
+					
 					}
 				else{
 					System.out.println("Invalid username, password combination");

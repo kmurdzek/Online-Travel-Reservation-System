@@ -17,6 +17,7 @@ int ticket_id = Integer.parseInt(request.getParameter("ticket_id"));
 //update the ticket table, make the ticket available
 //update purchase table delete the purchase
 //print your flight has been canceled for X amount
+//need to get the flight number as well
 PreparedStatement update_tix = con.prepareStatement("update ticket t set available = 0, class = 0 where ticket_id = ?");
 update_tix.setInt(1, ticket_id);
 update_tix.executeUpdate();
@@ -25,6 +26,8 @@ delete_purchase.setInt(1, ticket_id);
 delete_purchase.setString(2, (String)session.getAttribute("user"));
 delete_purchase.executeUpdate();
 String flight_class = request.getParameter("class");
+con.close();
+db.closeConnection(con);
 %>
 <h1>Successfully canceled your flight reservation</h1>
 <%

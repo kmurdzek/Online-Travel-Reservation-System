@@ -39,6 +39,8 @@ populate_table(upcoming_flights, out, 0, session);
 String get_past_flights = "select * from purchases p join ticket t on p.ticket_id=t.ticket_id join flight f on t.flight_number = f.flight_number where username = '"+(String)session.getAttribute("user")+"' and f.departure_date <'"+java.time.LocalDate.now()+"'";
 ResultSet past_flights = check.executeQuery(get_past_flights);
 populate_table(past_flights, out, 1, session);
+con.close();
+db.closeConnection(con);
 //we need a query to get the users upcoming flights
 //need a query to get the users past flights
 //going to join the purchases table with the flight table
@@ -47,6 +49,10 @@ populate_table(past_flights, out, 1, session);
 //possibly display flights that were waitlisted on, if the flight is no longer full possibly allow to book
 //it
 %>
+		<form method="post" action="index.jsp">
+		  <input type="submit" name="user_message" value="Return to Homepage"/>
+		  <br>
+		</form>
 </body>
 </html>
 <%! void populate_table(ResultSet result,JspWriter out, int type, HttpSession session){
