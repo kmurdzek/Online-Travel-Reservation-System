@@ -22,6 +22,9 @@
  		 background-color: #1fb4cf;
   		color: white;
          }
+         textarea{
+         font-size: 14px;
+         }
       </style>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -35,12 +38,21 @@ String get_upcoming_flights = "select * from purchases p join ticket t on p.tick
 ResultSet upcoming_flights = check.executeQuery(get_upcoming_flights);
 %><h2>Your Upcoming Flights</h2><%
 populate_table(upcoming_flights, out, 0, session);
-%><h2>Your Past Flights</h2><%
+
 String get_past_flights = "select * from purchases p join ticket t on p.ticket_id=t.ticket_id join flight f on t.flight_number = f.flight_number where username = '"+(String)session.getAttribute("user")+"' and f.departure_date <'"+java.time.LocalDate.now()+"'";
 ResultSet past_flights = check.executeQuery(get_past_flights);
-populate_table(past_flights, out, 1, session);
-con.close();
-db.closeConnection(con);
+
+if (past_flights.isBeforeFirst() ) {    //if previous flights not displaying this is why
+	%><h2>Your Past Flights</h2><%
+    populate_table(past_flights, out, 1, session);
+} 
+
+//write a query to access all questions
+String getQuestions = "select * from questions";
+ResultSet question = check.executeQuery(getQuestions);
+
+
+
 //we need a query to get the users upcoming flights
 //need a query to get the users past flights
 //going to join the purchases table with the flight table
@@ -48,13 +60,118 @@ db.closeConnection(con);
 
 //possibly display flights that were waitlisted on, if the flight is no longer full possibly allow to book
 //it
+
+
+//going to display a table of Faqs, when a customer asks a question it will be shown in the 
+//table but it wont have an answer until customer rep answers the question,
+//each question has a question id associated with it
+//
 %>
+<br>
+<br>
+<fieldset>
+		<legend>Ask a Customer Representative a Question
+		</legend>
+		<form method="post" action="askQuestion.jsp">
+		    <!-- note the show.jsp will be invoked when the choice is made -->
+			<!-- The next lines give HTML for radio buttons being displayed -->
+
+		<br>
+	
+					<textarea name = "question" rows = "4" cols="50"></textarea><br><br>
+					<input type="submit" name="question_submit" value = "Submit">
+
+
+		</form>
+		</fieldset>
+		<br>
+		<br>
+<fieldset>
+		<legend>Search for Question by Keywords
+		</legend>
+		<br>
+
+		<form  method="post" action="searchQuestion.jsp"> 
+		    <!-- note the show.jsp will be invoked when the choice is made -->
+			<!-- The next lines give HTML for radio buttons being displayed -->
+		<textarea name = "question_browse" rows = "4" cols="50"></textarea><br><br>
+		<input type="submit" name="search_submit" value = "Search">
+		</form>
+		<%
+
+		%>
+				<br>
+
+</fieldset>
+<br>
+<br>
+<fieldset>
+		<legend>Frequently Asked Questions
+		</legend>
+		<br>
+
+		
+		    <!-- note the show.jsp will be invoked when the choice is made -->
+			<!-- The next lines give HTML for radio buttons being displayed -->
+		<%
+		populate_table_2(question, out, 0, session);
+					con.close();
+					db.closeConnection(con);
+		%>
+				<br>
+
+</fieldset>
+<br>
+<br>
 		<form method="post" action="index.jsp">
 		  <input type="submit" name="user_message" value="Return to Homepage"/>
 		  <br>
 		</form>
+
 </body>
 </html>
+<%! void populate_table_2(ResultSet result,JspWriter out, int type, HttpSession session){
+	//populates question table with all questions
+	try{
+	out.print("<table style='width:100%'>");
+	out.print("<tr>");
+	out.print("<th style='width:50%'>");
+	out.print("Question");
+	out.print("</th>");
+	out.print("<th style='width:50%'>");
+	out.print("Answer");
+	out.print("</th>");
+	out.print("</tr>");
+
+	while(result.next()){
+		out.print("<tr>");
+		String question_id = result.getString("question_id");
+		out.print("<td><label name = question_id value = "+question_id+"/>");
+		String question = result.getString("question");
+		out.print(question);
+		out.print("</td>");
+		
+		String answer = result.getString("answer");
+		if(answer == null){
+			out.print("<td  style = 'font-style: italic' >");
+			out.print("A representative has not replied yet.");
+		}else{
+			out.print("<td>");
+			out.print(answer);	
+		}
+		
+		out.print("</td>");
+		out.print("</tr>");
+	}
+	
+	out.print("</table>");
+	
+	}catch(Exception e ) {
+		System.out.println(e);
+		
+	}
+}
+%>
 <%! void populate_table(ResultSet result,JspWriter out, int type, HttpSession session){
 	try{
 	out.print("<table>");
