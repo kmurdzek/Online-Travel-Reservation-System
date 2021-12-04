@@ -501,8 +501,8 @@ else{
 		
 		out.print("</tr>");
 		out.print("</table>");
-		
-		out.print("<form method= post action = checkout.jsp>");
+		out.print("</form>");
+		out.print("<form method= get action = checkout.jsp>");
 		
 		ResultSet result = executeQueryHelper(sort_by, departure_date_min,departure_date,departure_date_max, departure_airport, arrival_airport, con, airlines, price_max, departure_time_min, departure_time_max, landing_time_min, landing_time_max, number_of_stops);
 
@@ -517,6 +517,7 @@ else{
 			session.setAttribute("return_date_min", return_date_min);
 			session.setAttribute("departure_date_max", departure_date_max);
 			session.setAttribute("departure_date_min", departure_date_min);
+			//session.setAttribute("airline_name", f) 
 			
 			update_seats.setDate(1, java.sql.Date.valueOf(return_date));
 			update_seats.setString(2, arrival_airport);
