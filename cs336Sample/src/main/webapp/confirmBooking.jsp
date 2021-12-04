@@ -31,6 +31,12 @@
 			bookingFeeDeparting+=20;
 			break;
 		}
+		//we could check the waitlist table here to see if the user was on the waitlist
+		//for this flight if they were we can take them out
+		PreparedStatement state = con.prepareStatement("delete from waitlisted where username = ? and flight_number = ?");
+		state.setString(1, (String)session.getAttribute("user"));
+		state.setInt(2, Integer.parseInt(departing_flight));
+		state.executeUpdate();
 		PreparedStatement statement = con.prepareStatement("insert into purchases values(?,?,?,?,?,?,?)");
 		statement.setString(1,(String)session.getAttribute("user"));
 		statement.setInt(2,departing_ticket_id);

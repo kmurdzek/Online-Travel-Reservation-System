@@ -45,7 +45,17 @@ ResultSet past_flights = check.executeQuery(get_past_flights);
 if (past_flights.isBeforeFirst() ) {    //if previous flights not displaying this is why
 	%><h2>Your Past Flights</h2><%
     populate_table(past_flights, out, 1, session);
-} 
+}
+
+String get_waitlisted_flights = "select * from waitlisted w join flight f on w.flight_number = f.flight_number join flight_operated_by b on f.flight_number = b.flight_number where username = '"+session.getAttribute("user")+"'";
+//write a query to get your waitlisted flights if its null then dont show it
+ResultSet waitlisted_flights = check.executeQuery(get_waitlisted_flights);
+
+if (waitlisted_flights.isBeforeFirst() ) {    //if previous flights not displaying this is why
+	%><h2>Your Waitlisted Flights</h2><%
+    populate_table_3(waitlisted_flights, out, 2, session);
+}
+
 
 //write a query to access all questions
 String getQuestions = "select * from questions";
@@ -130,6 +140,114 @@ ResultSet question = check.executeQuery(getQuestions);
 
 </body>
 </html>
+<%! void populate_table_3(ResultSet result,JspWriter out, int type, HttpSession session){
+	//populates question table with all questions
+	try{
+	out.print("<table>");
+	out.print("<tr>");
+	out.print("<th>");
+	out.print("Flight Number");
+	out.print("</th>");
+	out.print("<th>");
+	out.print("Airline");
+	out.print("</th>");
+	out.print("<th>");
+	out.print("Departing From");
+	out.print("</th>");
+	out.print("<th>");
+	out.print("Arriving At");
+	out.print("</th>");
+	//make a column
+	out.print("<th>");
+	out.print("Departing Date");
+	out.print("</th>");
+	out.print("<th>");
+	out.print("Departing Time");
+	out.print("</th>");
+	out.print("<th>");
+	out.print("Arriving Date");
+	out.print("</th>");
+	out.print("<th>");
+	out.print("Arriving Time");
+	out.print("</th>");
+	out.print("<th>");
+	out.print("Available Seats");
+	out.print("</th>");
+	out.print("<th>");
+	out.print("Book");
+	out.print("</th>");
+	out.print("</tr>");
+	
+
+	while(result.next()){
+		out.print("<tr>");
+		String flightNum = result.getString("flight_number");
+		out.print("<td><label name = flight_number value = "+flightNum+"/>");
+		out.print(flightNum);
+		out.print("</td>");
+		
+		String airline_id = result.getString("airline_id");
+		out.print("<td><label name = airline_id value = "+airline_id+"/>");
+		out.print(airline_id);
+		out.print("</td>");
+		
+		String depart = result.getString("departure_airport");
+		out.print("<td><label name = 'departure"+flightNum+"' value = "+depart+"/>");
+		out.print(depart);
+		out.print("</td>");
+		
+		String arrive = result.getString("arrival_airport");
+		out.print("<td name = arrival"+flightNum+" value = "+arrive+"'>");
+		out.print(arrive);
+		out.print("</td>");
+		
+		String departure_date = result.getString("departure_date");
+		out.print("<td name = depart_date"+flightNum+" value = "+departure_date+">");
+		out.print(departure_date);
+		out.print("</td>");
+		
+		String departure_time = result.getString("departure_time");
+		out.print("<td name = depart_time"+flightNum+" value = "+departure_time+">");
+		out.print(departure_time);
+		out.print("</td>");
+		
+		String arrival_date = result.getString("arrival_date");
+		out.print("<td name = arrival_date"+flightNum+" value = "+arrival_date+">");
+		out.print(arrival_date);
+		out.print("</td>");
+		
+		String arrival_time = result.getString("arrival_time");
+		out.print("<td name = arrival_time"+flightNum+" value = "+arrival_time+">");
+		out.print(arrival_time);
+		out.print("</td>");
+		
+		String seats_available = result.getString("occupied_seats");
+		out.print("<td><label name = seats_available value = "+seats_available+"/>");
+		out.print(seats_available);
+		out.print("</td>");
+		int seats = Integer.parseInt(seats_available);
+		if(seats > 0){
+		out.print("<td>");
+		out.print("<form action = resultingFlights.jsp?departure_airport="+depart+"&arrival_airport="+arrive+"&departure_date="+departure_date+"&departure_date_flexibility=0&return_date=&return_date_flexibility=0&flight_type=One-Way method= post >");
+		out.print("<input type='submit' name='command' value='Book'/>");
+		out.print("</form>");
+		out.print("</td>");
+		}else{
+			out.print("<td>");
+			out.print("Flight is Full");
+			out.print("</td>");
+		}
+		out.print("</tr>");
+	}
+	
+	out.print("</table>");
+	
+	}catch(Exception e ) {
+		System.out.println(e);
+		
+	}
+}
+%>
 <%! void populate_table_2(ResultSet result,JspWriter out, int type, HttpSession session){
 	//populates question table with all questions
 	try{
@@ -161,6 +279,7 @@ ResultSet question = check.executeQuery(getQuestions);
 		}
 		
 		out.print("</td>");
+		
 		out.print("</tr>");
 	}
 	
@@ -226,7 +345,7 @@ ResultSet question = check.executeQuery(getQuestions);
 		out.print("</td>");
 		
 		String flightNum = result.getString("flight_number");
-		out.print("<td>");
+		out.print("<td><label name = flight_number value = "+flightNum+"/>");
 		out.print(flightNum);
 		out.print("</td>");
 		
@@ -289,6 +408,7 @@ ResultSet question = check.executeQuery(getQuestions);
 		out.print("<form action = cancelFlight.jsp method= post >");
 		out.print("<input type='submit' name='command' value='Cancel'/>");
 		out.print("<input type=hidden name=ticket_id value='"+ticket_id+"'>");
+		out.print("<input type=hidden name=flight_number value='"+flightNum+"'>");
 		out.print("<input type=hidden name=class value='"+type_string+"'>");
 		out.print("</form>");
 		out.print("</td>");

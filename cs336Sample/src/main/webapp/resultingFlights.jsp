@@ -627,7 +627,7 @@ else{
 		String departure_flight = "";
 		
 		if (sort_by.equals("none")){
-			departure_flight = String.format("SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number join airline a on a.airline_id = o.airline_id where f.departure_date >= '" + departure_date_min+" ' and f.departure_date <= '" + departure_date_max+"' and f.departure_airport = '" + departure_airport+"' and f.arrival_airport = '" + arrival_airport + "' and f.departure_time >= '" + departure_time_min+" ' and f.departure_time <= '" + departure_time_max +"' and t.price <= '" + pricing +"' and f.arrival_time >= '" + landing_time_min + "' and f.arrival_time <= '" + landing_time_max + "' %s %s and available = 0 GROUP BY f.flight_number ORDER BY RAND()", okok, addTheseAirlineNames);
+			departure_flight = String.format("SELECT *, TIMEDIFF(Concat(f.arrival_date, ' ',f.arrival_time), Concat(f.departure_date, ' ',f.departure_time)) as flight_duration from flight f join ticket t on f.flight_number = t.flight_number join flight_operated_by o on f.flight_number = o.flight_number and t.flight_number = o.flight_number join airline a on a.airline_id = o.airline_id where f.departure_date >= '" + departure_date_min+" ' and f.departure_date <= '" + departure_date_max+"' and f.departure_airport = '" + departure_airport+"' and f.arrival_airport = '" + arrival_airport + "' and f.departure_time >= '" + departure_time_min+" ' and f.departure_time <= '" + departure_time_max +"' and t.price <= '" + pricing +"' and f.arrival_time >= '" + landing_time_min + "' and f.arrival_time <= '" + landing_time_max + "' %s %s GROUP BY f.flight_number ORDER BY RAND()", okok, addTheseAirlineNames);
 			//System.out.println(departure_flight);
 		}
 		else if (sort_by.equals("price_low_to_high")){
@@ -748,10 +748,10 @@ else{
 //		System.out.println("flight_number"+flightNum);
 		out.print("</td>");
 		
-		String airline_abv = result.getString("airline_abv");
+		String airline_abv = result.getString("airline_id");
 		session.setAttribute("airline_abv"+flightNum, airline_abv);
 
-		out.print("<td name = arrival"+airline_abv+" value = "+airline_abv+"'>");
+		out.print("<td name = arrival"+flightNum+" value = "+airline_abv+"'>");
 		out.print(airline_abv);
 		out.print("</td>");
 		

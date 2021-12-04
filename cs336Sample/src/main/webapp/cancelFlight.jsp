@@ -14,6 +14,8 @@ ApplicationDB db = new ApplicationDB();
 Connection con = db.getConnection();	
 Statement check = con.createStatement();
 int ticket_id = Integer.parseInt(request.getParameter("ticket_id"));
+int flight_number = Integer.parseInt(request.getParameter("flight_number"));
+System.out.println(flight_number);
 //update the ticket table, make the ticket available
 //update purchase table delete the purchase
 //print your flight has been canceled for X amount
@@ -25,7 +27,12 @@ PreparedStatement delete_purchase = con.prepareStatement("delete from purchases 
 delete_purchase.setInt(1, ticket_id);
 delete_purchase.setString(2, (String)session.getAttribute("user"));
 delete_purchase.executeUpdate();
+//increase the number of available seats
+PreparedStatement increaseSeat = con.prepareStatement("update flight f set f.occupied_seats = f.occupied_seats+1 where f.flight_number = ?");
+increaseSeat.setInt(1, flight_number);
+increaseSeat.executeUpdate();
 String flight_class = request.getParameter("class");
+
 con.close();
 db.closeConnection(con);
 %>

@@ -20,13 +20,16 @@ Statement check = con.createStatement();
 //if a user cancels and a person on the waitlist books, remove the entry from the waitlist
 String departing_flight_num = (String)session.getAttribute("departing_flight_number");
 String returning_flight_num = (String)session.getAttribute("returning_flight_number");
+
 PreparedStatement statement = con.prepareStatement("insert into waitlisted values(?,?)");
 statement.setString(1,(String)session.getAttribute("user"));
 statement.setInt(2, Integer.parseInt(departing_flight_num));
 statement.executeUpdate();
+if(returning_flight_num!=null){
 statement.setString(1,(String)session.getAttribute("user"));
 statement.setInt(2, Integer.parseInt(returning_flight_num));
 statement.executeUpdate();
+}
 }catch(Exception e){
 	out.print(e);
 }
