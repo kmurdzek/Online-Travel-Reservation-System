@@ -28,10 +28,19 @@
 </head>
 <body>
 <%
+
+//String username = request.getParameter("username");
+//session.setAttribute("username", username);
+
+//System.out.print("The name is" + session.getAttribute("username"));
+
 String departing_flight = request.getParameter("flight0");
 session.setAttribute("departing_flight_number", departing_flight);
 String dep = (String)session.getAttribute("departure"+departing_flight);
 String returning_flight= request.getParameter("flight1");
+
+
+
 session.setAttribute("returning_flight_number", returning_flight);
 ApplicationDB db = new ApplicationDB();	
 Connection con = db.getConnection();	
@@ -57,13 +66,13 @@ int departing_seats = Integer.parseInt((String)session.getAttribute("occupied_se
 if(returning_flight!= null){
 	returning_seats =  Integer.parseInt((String)session.getAttribute("occupied_seats"+returning_flight));
 	if(departing_seats == 0 || returning_seats ==0){
-		out.print("<form action=joinWaitlist.jsp method=post>");
+		out.print("<form action=rep_joinWaitlist.jsp method=post>");
 	}else{
 		out.print("<form action=rep_confirmBooking.jsp method=post>");
 	}
 }else{
 	if(departing_seats == 0){
-		out.print("<form action=joinWaitlist.jsp method=post>");
+		out.print("<form action=rep_joinWaitlist.jsp method=post>");
 	}else{
 		out.print("<form action=rep_confirmBooking.jsp method=post>");
 		returning_seats = 1;

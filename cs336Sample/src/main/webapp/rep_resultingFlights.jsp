@@ -57,6 +57,10 @@ else{
 	
 	%><h1>Check the available flights <% out.print(fullName); %></h1><%
 	
+	String username = request.getParameter("username");
+	session.setAttribute("username", username);
+	//System.out.print("This is the username: "+username);
+
 	String departure_date_flexibility = request.getParameter("departure_date_flexibility");
 	String return_date_flexibility = request.getParameter("return_date_flexibility");
 	String departure_date = request.getParameter("departure_date");
@@ -284,7 +288,7 @@ else{
 		out.print("<th>");
 		out.print("Sort By ");
 		
-		out.print("<form name =sort  method =get action =resultingFlights.jsp>");
+		out.print("<form name =sort  method =get action =rep_resultingFlights.jsp>");
 		out.print("<select name = sort_by id =sorting_options >");	
 		session.setAttribute("sort_by", null);
 		if (sort_by.equals("none")){
@@ -361,7 +365,7 @@ else{
 		
 			out.print("<td>");
 			out.println("Airlines");
-			out.print("<form name =filters  method =get action =resultingFlights.jsp value = \"none\"");
+			out.print("<form name =filters  method =get action =rep_resultingFlights.jsp value = \"none\"");
 				out.print("<ul style=list-style-type:none>");
 				while (all_airlines.next()){					
 					String airlineName = all_airlines.getString("airline_name");

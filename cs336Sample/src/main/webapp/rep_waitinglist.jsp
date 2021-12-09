@@ -37,7 +37,10 @@ String query = "";
 
 
 out.print("<h1>Waiting List for flight number "+flight_number+"</h1>");
-query = "select username from waitlisted where flight_number= '"+flight_number;
+query = "select username,flight_number from waitlisted where flight_number =  " + flight_number;
+		
+//System.out.print("select username from waitlisted where flight_number= "+flight_number);
+
 
 ResultSet result = check.executeQuery(query);
 populate_table(result, out, 0, session);
@@ -59,15 +62,7 @@ populate_table(result, out, 0, session);
 	out.print("<th>");
 	out.print("User");
 	out.print("</th>");
-	out.print("<th>");
-	out.print("Airline");
-	out.print("</th>");
-	out.print("<th>");
-	out.print("Flight Number");
-	out.print("</th>");
-	out.print("<th>");
-	out.print("</tr>");
-	out.print("</tr>");
+
 	
 	while(result.next()){
 		out.print("<tr>");
@@ -80,16 +75,7 @@ populate_table(result, out, 0, session);
 		out.print(user);
 		out.print("</td>");
 		
-		
-		String airline_name = result.getString("airline_id");
-		out.print("<td name = arrival"+flightNum+" value = "+airline_name+"'>");
-		out.print(airline_name);
-		out.print("</td>");
-		
-		out.print("<td>");
-		out.print(flightNum);
-		out.print("</td>");
-		
+				
 	}
 	out.print("</table>");
 	}catch(Exception e ) {

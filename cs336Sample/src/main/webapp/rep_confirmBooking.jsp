@@ -10,12 +10,18 @@
 </head>
 <body>
 <h1>Your booking has been confirmed</h1>
+
 <% try {
+	String username = (String)session.getAttribute("username");
+	//System.out.print("tHE USNAME IS " +username);
+
 		//Get the database connection
 		ApplicationDB db = new ApplicationDB();	
 		Connection con = db.getConnection();	
 		Statement check = con.createStatement();
 		String departing_flight = (String)session.getAttribute("departing_flight_number");
+		
+		
 		double basePriceDeparting = Double.parseDouble((String)session.getAttribute("price"+departing_flight));
 		double totalCostDeparting = basePriceDeparting;
 		double bookingFeeDeparting = 0;
@@ -32,7 +38,7 @@
 			break;
 		}
 		PreparedStatement statement = con.prepareStatement("insert into purchases values(?,?,?,?,?,?,?)");
-		statement.setString(1,(String)session.getAttribute("user"));
+		statement.setString(1,(String)session.getAttribute("username"));
 		statement.setInt(2,departing_ticket_id);
 		long millis=System.currentTimeMillis();  
 		java.sql.Date date=new java.sql.Date(millis);  
@@ -67,7 +73,7 @@
 				bookingFeeReturning+=20;
 				break;
 			}
-			statement.setString(1,(String)session.getAttribute("username"));
+			statement.setString(1,username);
 			statement.setInt(2,returning_ticket_id);   
 			statement.setDate(3, date);
 			statement.setTime(4, Time.valueOf(java.time.LocalTime.now()));
@@ -87,7 +93,7 @@
 		out.print(e);
 	}
 %>
-		<form method="post" action="index.jsp">
+		<form method="post" action="customerRepIndex.jsp">
 		  <input type="submit" name="user_message" value="Return to Homepage"/>
 		  <br>
 		</form>

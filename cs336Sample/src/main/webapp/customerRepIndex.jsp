@@ -135,10 +135,9 @@
 		
 	
 	
-	
+	<form method="post" action="rep_waitinglist.jsp">
 	<fieldset>
 	<legend>Waiting List</legend>
-	<form method="post" action="rep_waitinglist.jsp">
 		  <table>
 		  <tr>  
 		  </tr>
@@ -154,15 +153,16 @@
 			</table>
 			
 		  <br>
-		</form>
+		
 	</fieldset>
+	</form>
 		<br>
 		<br>
 		
 		
+	<form method="post" action="rep_airportFlights.jsp">
 	<fieldset>
 	<legend>List Flights for Airport</legend>
-	<form method="post" action="adminDeleteUser.jsp">
 		  <table>
 		  <tr>  
 		  </tr>
@@ -178,8 +178,9 @@
 			</table>
 			
 		  <br>
-		</form>
 	</fieldset>
+	</form>
+	
 		<br>
 		<br>
 		

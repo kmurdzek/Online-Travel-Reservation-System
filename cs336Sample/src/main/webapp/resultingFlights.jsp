@@ -764,11 +764,11 @@ else{
 //		System.out.println("flight_number"+flightNum);
 		out.print("</td>");
 		
-		String airline_abv = result.getString("airline_abv");
-		session.setAttribute("airline_abv"+flightNum, airline_abv);
+		String airline_id = result.getString("airline_id");
+		session.setAttribute("airline_id"+flightNum, airline_id);
 
-		out.print("<td name = arrival"+airline_abv+" value = "+airline_abv+"'>");
-		out.print(airline_abv);
+		out.print("<td name = arrival"+airline_id+" value = "+airline_id+"'>");
+		out.print(airline_id);
 		out.print("</td>");
 		
 		out.print("<td>");
