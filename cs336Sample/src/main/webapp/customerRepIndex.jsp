@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Home</title>
     <style>
       td {
         height: 40px;
@@ -85,22 +85,44 @@
 			
 	<fieldset>
 	<legend>Edit Reservation</legend>
-	<form method="post" action="adminDeleteUser.jsp">
+	<form method="post" action="editReservation.jsp">
+	<h5>Please enter Ticket ID, Flight Number and what you would like to edit.</h5>
+	
 		  <table>
 		  <tr>  
+		  
 		  </tr>
+		  <tr>    
+					<td>Ticket ID:</td><td><input type="text" name="ticket_id"></td>
+				</tr>
 				<tr>    
-					<td>Ticket ID</td><td><input type="text" name="delete_username"></td>
+					<td>Flight Number:</td><td><input type="text" name="flight_number"></td>
 				</tr>
 				<tr>
-				<td>
-				<input type="submit" name="command" value="Edit"/>
-				</td>
+					<td>Departure Airport:</td><td><input type="text" name="departure_airport"></td>
+					<td>Departure Date [yyyy-mm-dd]:</td><td><input type="text" name="departure_date"></td>
+					<td>Departure Time:</td><td><input type="text" name="departure_time"></td>  
+					
+				</tr>  
+				
+				<tr>    
+					<td>Arrival Airport:</td><td><input type="text" name="arrival_airport"></td>
+					<td>Arrival Date [yyyy-mm-dd]:</td><td><input type="text" name="arrival_date"></td>    
+					<td>Arrival Time:</td><td><input type="text" name="arrival_time"></td>
+					
 				</tr>
-					 		  
+				<tr>
+					<td>Seat:</td><td><input type="text" name="seat_number"></td>
+					
+				</tr>
+
+				<tr>
+					<td>Upgrade Class [Business/First]:</td><td><input type="text" name="select_class"></td>
+				</tr>
+					
+					 <tr><td><input type="submit" name="command" value="EDIT"/></td></tr>	  
 			</table>
 			
-		  <br>
 		  <br>
 		</form>
 	</fieldset>		
@@ -110,21 +132,118 @@
 	
 		
 	
-	<fieldset>
-	<legend>Add, Edit, Delete information for aircrafts, airports, and flights</legend>
-	<form method="post" action="adminDeleteUser.jsp">
+		<fieldset>
+	<legend>Add, Edit, or Delete Aircraft</legend>
+	<form method="post" action="aircraftHandler.jsp">
+		<h4>To Add:</h4>
+	<h5>Please enter all of the following information.</h5>
+	<h4>To Edit:</h4>
+	<h5>Please enter the aircraft model number and what you would like to edit.</h5>
+	<h4>To Delete:</h4>
+	<h5>Please enter the aircraft model number.</h5>
 		  <table>
 		  <tr>  
+		  
 		  </tr>
+		  <tr>    
+					<td>Aircraft Model Number:</td><td><input type="text" name="aircraft_model"></td>
+				</tr>
 				<tr>    
-					<td>Flight Number</td><td><input type="text" name="delete_username"></td>
+					<td>Number of Seats:</td><td><input type="text" name="num_seats"></td>
 				</tr>
 				<tr>
-				<td>
-				<input type="submit" name="command" value="Submit"/>
-				</td>
+					<td>Days of the Week the Aircraft Operates:</td><td><input type="text" name="days_of_op"></td>
+					
 				</tr>
-					 		  
+				<tr>
+					<td>Select Action:</td>
+					<td><input type=radio name="handle_aircraft" value= "add_aircraft">Add</td>
+					<td><input type=radio name="handle_aircraft" value= "edit_aircraft">Edit</td>
+					<td><input type=radio name="handle_aircraft" value= "delete_aircraft">Delete</td>
+				</tr>		
+					 <tr><td><input type="submit" name="command" value="Submit"/></td></tr>	  
+			</table>
+			
+		  <br>
+		</form>
+	</fieldset>
+		<br>
+		<br>
+		
+		<fieldset>
+	<legend>Add, Edit, or Delete Airport</legend>
+	<form method="post" action="airportHandler.jsp">
+		<h4>To Add/Delete:</h4>
+	<h5>Please enter original airport name.</h5>
+	<h4>To Edit:</h4>
+	<h5>Please enter original airport name and new airport name.</h5>
+	
+		  <table>
+		  <tr>  
+		  
+		  </tr>
+		  <tr>    
+					<td>Original Airport Name:</td><td><input type="text" name="original_name"></td><td>New Airport Name:</td><td><input type="text" name="new_name"></td>
+				</tr>
+				
+				<tr>
+					<td>Select Action:</td>
+					<td><input type=radio name="handle_airport" value= "add_airport">Add</td>
+					<td><input type=radio name="handle_airport" value= "edit_airport">Edit</td>
+					<td><input type=radio name="handle_airport" value= "delete_airport">Delete</td>
+				</tr>		
+					 <tr><td><input type="submit" name="command" value="Submit"/></td></tr>	  
+			</table>
+			
+		  <br>
+		</form>
+	</fieldset>
+		<br>
+		<br>
+		
+			<fieldset>
+	<legend> Add, Edit, or Delete Flight</legend>
+	<form method="post" action="flightHandler.jsp">
+	<h4>To Add:</h4>
+	<h5>Please enter all of the following information.</h5>
+	<h4>To Edit:</h4>
+	<h5>Please enter the flight number and what you would like to edit.</h5>
+	<h4>To Delete:</h4>
+	<h5>Please enter the flight number.</h5>
+		  <table>
+		  <tr>  
+		  
+		  </tr>
+				<tr>    
+					<td>Flight Number:</td><td><input type="text" name="flight_number"></td>
+					<td>Occupied Seats:</td><td><input type="text" name="occupied_seats"></td>
+				</tr>
+				
+				<tr>
+					<td>Departure Airport:</td><td><input type="text" name="departure_airport"></td>
+					<td>Departure Date [yyyy-mm-dd]:</td><td><input type="text" name="departure_date"></td>
+					<td>Departure Time:</td><td><input type="text" name="departure_time"></td>  
+					
+				</tr>  
+				
+				<tr>    
+					<td>Arrival Airport:</td><td><input type="text" name="arrival_airport"></td>
+					<td>Arrival Date [yyyy-mm-dd]:</td><td><input type="text" name="arrival_date"></td>    
+					<td>Arrival Time:</td><td><input type="text" name="arrival_time"></td>
+					
+				</tr>	
+				
+				<tr>
+				<td>Flight Type [Domestic/International]:</td><td><input type="text" name="flight_type"></td>
+				</tr>
+						
+				<tr>
+					<td>Select Action:</td>
+					<td><input type=radio name="handle_flight" value= "add_flight">Add</td>
+					<td><input type=radio name="handle_flight" value= "edit_flight">Edit</td>
+					<td><input type=radio name="handle_flight" value= "delete_flight">Delete</td>
+				</tr>			
+					 <tr><td><input type="submit" name="command" value="Submit"/></td></tr>	  
 			</table>
 			
 		  <br>
@@ -186,25 +305,53 @@
 		
 		
 		
-		
 	<fieldset>
 	<legend>User Questions</legend>
-	<form method="post" action="adminDeleteUser.jsp">
-		  <table>
-		  <tr>  
-		  </tr>
-		  <td>There will be a table of questions here</td>
-				<tr>    
-					<td>Answer:</td><td><input type="text" name="delete_username"></td>
-				</tr>
-				<tr>
-				<td>
-				<input type="submit" name="command" value="Submit"/>
-				</td>
-				</tr>
-					 		  
-			</table>
-			
-		  <br>
-		</form>
+	<form action="answerQuestion.jsp" method="post">
+        <h5>Question ID:</h5>
+        <input name="question_id" type="text">
+        <h5>Response:</h5>
+        <input name="answer" type="text"/>
+        <br><br>
+        <button>Send</button>
+    </form>
+		<br>
+		<h3>Unanswered Questions:</h3>
+    <%
+    ApplicationDB db = new ApplicationDB();	
+	    Connection con = db.getConnection();
+	    Statement st = con.createStatement();
+	    
+	    ResultSet rs = st.executeQuery("SELECT * from questions where answer IS NULL");
+	    if(!rs.next())
+	    {
+	    	out.print("<p>There are no unanswered questions.</p>");
+	    }
+	    else
+	    {
+	    	while(rs.next())
+		    {
+		    	//int qid = rs.getInt("question_id");
+		    	//String q = rs.getString("question");
+		    	//String displayMessage = "Question ID: " + qid + "<br>Question: " + q;
+		    	
+		    	//out.print("<p>" + displayMessage + "</p>");
+	    		String question_id = rs.getString("question_id");
+	    		out.print("<td><label name = question_id value = "+question_id+"/>");
+	    		String question = rs.getString("question");
+	    		out.print("<td><label name = question value = "+question+"/>");
+		    }
+	    }
+	    
+	    st.close();
+	    rs.close();
+    	db.closeConnection(con);
+    %>
+	
+	</fieldset>
+	<br>
+	<fieldset>
+	<form action="logout.jsp" method="post">
+	<button>Logout</button>
+	</form>
 	</fieldset>
