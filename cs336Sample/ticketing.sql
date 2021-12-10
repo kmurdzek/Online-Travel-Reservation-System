@@ -31,7 +31,8 @@ is_international bool
 drop table if exists aircraft;
 create table aircraft(
 aircraft_model_number int primary key,
-number_of_seats int
+number_of_seats int,
+days_of_operation varchar(100)
 );
 drop table if exists airline;
 create table airline(
