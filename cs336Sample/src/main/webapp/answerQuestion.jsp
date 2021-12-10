@@ -24,7 +24,7 @@ Statement stmt = con.createStatement();
 if(question_id.equals("") || answer.equals("")){
 	%>
 	<jsp:forward page = "customerRepIndex.jsp">
-	<jsp:param value="Please enter Question ID AND Reply!" name="user_message"/>
+	<jsp:param value="Please enter Question ID AND Response!" name="user_message"/>
 	</jsp:forward>
 	<% 
 }
