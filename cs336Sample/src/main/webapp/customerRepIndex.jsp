@@ -268,7 +268,7 @@
 		  <tr>  
 		  </tr>
 				<tr>    
-					<td>Airport Name</td><td><input type="text" name="delete_username"></td>
+					<td>Airport Name</td><td><input type="text" name="airport_name"></td>
 				</tr>
 				<tr>
 				<td>
