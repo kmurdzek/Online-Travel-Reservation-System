@@ -91,7 +91,7 @@ if(returning_flight!= null){
 
 <tr>
 <td>Departing</td>
-<td><% out.print((String)session.getAttribute("airline_abv"+departing_flight)); %> </td>
+<td><% out.print((String)session.getAttribute("airline_id"+departing_flight)); %> </td>
 <td><% out.print((String)session.getAttribute("flight_number"+departing_flight)); %> </td>
 <td><% out.print((String)session.getAttribute("departure"+departing_flight)); %> </td>
 <td><% out.print((String)session.getAttribute("arrival"+departing_flight)); %> </td>

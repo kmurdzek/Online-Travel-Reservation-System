@@ -169,8 +169,10 @@ int flight_num = Integer.parseInt(flight_number);
 					con.close(); 
 				} else { //delete flight --> delete ticket
 					//Statement check = con.createStatement();
-					query = "delete flight, ticket from flight inner join ticket on ticket.flight_number = flight.flight_number where flight.flight_number = "+flight_number+" ";
-					check.executeQuery(query);
+					query = "delete flight, ticket from flight inner join ticket on ticket.flight_number = flight.flight_number where flight.flight_number = ? ";
+					PreparedStatement statement = con.prepareStatement(query);
+					statement.setInt(1, flight_num);
+					statement.executeUpdate();
 					con.close();
 					out.print("Flight: "+flight_num+" has successfully been deleted.");
 					
