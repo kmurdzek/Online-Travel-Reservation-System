@@ -265,6 +265,13 @@
 				%>
 		  <br>
 		</fieldset>
+	<br>
+	<fieldset>
+	<form action="logout.jsp" method="post">
+	<button>Logout</button>
+	</form>
+	</fieldset>
+
 </body>
 </html>
 <%! void populate_table(ResultSet result,JspWriter out, int type, HttpSession session){

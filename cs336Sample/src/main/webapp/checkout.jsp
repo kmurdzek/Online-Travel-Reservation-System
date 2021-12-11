@@ -135,7 +135,7 @@ if(returning_flight != null){
 	%>
 	<tr>
 <td>Returning</td>
-<td><% out.print((String)session.getAttribute("airline_abv"+returning_flight)); %> </td>
+<td><% out.print((String)session.getAttribute("airline_id"+returning_flight)); %> </td>
 <td><% out.print((String)session.getAttribute("flight_number"+returning_flight)); %> </td>
 <td><% out.print((String)session.getAttribute("departure"+returning_flight)); %> </td>
 <td><% out.print((String)session.getAttribute("arrival"+returning_flight)); %> </td>

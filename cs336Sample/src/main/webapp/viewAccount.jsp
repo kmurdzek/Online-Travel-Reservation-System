@@ -329,10 +329,11 @@ ResultSet question = check.executeQuery(getQuestions);
 	out.print("<th>");
 	out.print("Class");
 	out.print("</th>");
+	if(type == 0){
 	out.print("<th>");
 	out.print("Cancel Flight");
 	out.print("</th>");
-	
+	}
 	out.print("</tr>");
 	out.print("</tr>");
 	
@@ -398,12 +399,14 @@ ResultSet question = check.executeQuery(getQuestions);
 			break;
 		}
 		
+		
 			
+		
 		out.print("<td name = class"+flightNum+" value = "+type_string+""+">");
 		session.setAttribute("class"+flightNum, type_string+"");
 		out.print(type_string);
 		out.print("</td>");
-		
+		if(type ==0 ){
 		out.print("<td>");
 		out.print("<form action = cancelFlight.jsp method= post >");
 		out.print("<input type='submit' name='command' value='Cancel'/>");
@@ -412,6 +415,7 @@ ResultSet question = check.executeQuery(getQuestions);
 		out.print("<input type=hidden name=class value='"+type_string+"'>");
 		out.print("</form>");
 		out.print("</td>");
+		}
 		/*
 		String price = result.getString("price");
 		out.print("<td name = price"+flightNum+" value = "+price+">");

@@ -36,7 +36,7 @@ String flight_class = request.getParameter("class");
 con.close();
 db.closeConnection(con);
 %>
-<h1>Successfully canceled your flight reservation</h1>
+<h1>Successfully cancelled your flight reservation</h1>
 <%
 if(flight_class.equals("Economy Class")){
 	out.print("<h2>Your booking was cancelled with an additional fee</h2>");
