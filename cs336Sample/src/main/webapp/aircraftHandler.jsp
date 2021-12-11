@@ -33,7 +33,7 @@ if(aircraft_handler == null){
 	<% 
 }
 
-if(num_seats.equals("") || days_of_op.equals("")){
+if(aircraft_handler.equals("add_aircraft")&&(num_seats.equals("") || days_of_op.equals(""))){
 	%>
 	<jsp:forward page = "customerRepIndex.jsp">
 	<jsp:param value="Cannot add aircraft without answering all fields!" name="user_message"/>
