@@ -64,42 +64,18 @@ if(result.getInt(1) == 1){
 		statement.setString(2, original_name);
 		statement.executeUpdate();
 		con.close();
-		out.print("Successfully edited airport name to: "+new_name+"'.");
+		out.print("Successfully edited airport name to: "+new_name+".");
 		
-	} else { //delete airport --> delete flight --> delete ticket :(
-		//PreparedStatement statement = con.prepareStatement("delete from airport where airport_id = ?");
-		//statement.setString(1, original_name);
-		//statement.executeUpdate();
-		//PreparedStatement statement = con.prepareStatement("join flight f on a.airport_id = f.departure_airport or a.airport_id = f.arrival_airport");
+	} else { //delete airport 
 		
-		//PreparedStatement statement = con.prepareStatement("delete from ticket where exists (select null from flight f where f.flight_number = flight_number and f.arrival_airport = "+original_name+" or f.departure_airport = "+original_name+")");
-		//statement.executeUpdate();
-		//query = "delete from ticket where exists (select null from flight f where f.flight_number = flight_number and f.arrival_airport = "+original_name+" or f.departure_airport = "+original_name+")";
-		//Statement check = con.createStatement();
 		
-		//delete ticket where airport is arrival airport
-		query = "delete ticket from ticket inner join flight on flight.flight_number = ticket.flight_number where flight.arrival_airport = "+original_name+"";
-		check.executeQuery(query);
-		//delete ticket where airport is departure airport
-		query = "delete ticket from ticket inner join flight on flight.flight_number = ticket.flight_number where flight.departure_airport = "+original_name+"";
-		check.executeQuery(query);
-		//delete flight where airport is arrival airport
-		query = "delete flight from flight inner join airport on airport.airport_id = flight.arrival_airport where airport.airport_id = "+original_name+"";
-		check.executeQuery(query);
-		//delete flight where airport is arrival airport
-		query = "delete flight from flight inner join airport on airport.airport_id = flight.departure_airport where airport.airport_id = "+original_name+"";
-		check.executeQuery(query);
-		//delete airport from airport table
-		query = "delete airport from airport where airport.airport_id = "+original_name+"";
-		check.executeQuery(query);
-		
-		//query = "delete from flight where exists (select null from airport a where a.airport_id = departure_airport or a.airport_id = arrival_airport and a.airport_id = "+original_name+" )";
-		//check.executeQuery(query);
-		//query = "delete from airport where airport_id = "+original_name+" ";
-		//check.executeQuery(query);
+		query = "delete airport from airport where airport_id = ? ";
+		PreparedStatement statement = con.prepareStatement(query);
+		statement.setString(1, original_name);
+		statement.executeUpdate();
 		con.close();
-		
-		out.print("Successfully deleted airport: "+original_name+"'."); 
+
+		out.print("Successfully deleted airport: "+original_name+"."); 
 		
 	}
 	
